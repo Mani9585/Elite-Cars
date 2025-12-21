@@ -7,7 +7,7 @@
     "price": "25 Lakh",
     "mileage": "18 km/l",
     "fuelType": "Petrol",
-    "stock": 3
+    "stock": 10
   },
   {
     "id": 2,
@@ -17,7 +17,7 @@
     "price": "45 Lakh",
     "mileage": "15 km/l",
     "fuelType": "Petrol",
-    "stock": 5
+    "stock": 10
   },
   {
     "id": 3,
@@ -31,7 +31,7 @@
   },
   {
     "id": 4,
-    "name": "Aurora X1",
+    "name": "Aurora X12",
     "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
     "topSpeed": "220 km/h",
     "price": "25 Lakh",
@@ -41,7 +41,7 @@
   },
   {
     "id": 5,
-    "name": "Aurora GT",
+    "name": "Aurora GT2",
     "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
     "topSpeed": "280 km/h",
     "price": "45 Lakh",
@@ -51,7 +51,7 @@
   },
   {
     "id": 6,
-    "name": "Aurora EV",
+    "name": "Aurora EV2",
     "image": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
     "topSpeed": "200 km/h",
     "price": "35 Lakh",
@@ -61,7 +61,7 @@
   },
   {
     "id": 7,
-    "name": "Aurora X1",
+    "name": "Aurora X13",
     "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
     "topSpeed": "220 km/h",
     "price": "25 Lakh",
@@ -71,7 +71,7 @@
   },
   {
     "id": 8,
-    "name": "Aurora GT",
+    "name": "Aurora GT3",
     "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
     "topSpeed": "280 km/h",
     "price": "45 Lakh",
@@ -80,13 +80,12 @@
     "stock": 8
   },
   {
-    "id": 9,
-    "name": "Aurora EV",
-    "image": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
-    "topSpeed": "200 km/h",
-    "price": "35 Lakh",
-    "mileage": "450 km",
-    "fuelType": "Electric",
-    "stock": 0
+    "name": "skyline",
+    "image": "https://tse4.mm.bing.net/th/id/OIP.QG16MDBcGB9jvocEJuNHcAHaE8?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3",
+    "topSpeed": "270 km/h",
+    "price": "15 Lakh",
+    "mileage": "10",
+    "fuelType": "Petrol",
+    "stock": 10
   }
 ]

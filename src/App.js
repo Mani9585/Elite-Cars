@@ -7,6 +7,9 @@ import BackgroundLayout from "./components/BackgroundLayout";
 import Home from "./components/Home";
 import Catalogue from "./components/Catalogue";
 import Career from "./components/Career";
+import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
+
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -28,6 +31,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/catalogue" element={<Catalogue />} />
           <Route path="/career" element={<Career />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
       </Routes>
     </BrowserRouter>
