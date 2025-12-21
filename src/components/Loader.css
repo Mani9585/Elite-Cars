@@ -1,0 +1,30 @@
+.loader {
+  height: 100vh;
+  background: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader img {
+  width: 120px;
+  animation: zoom 2s ease;
+}
+
+.loader p {
+  margin-top: 20px;
+  color: white;
+  letter-spacing: 4px;
+  opacity: 0;
+  animation: fade 2s forwards 1.5s;
+}
+
+@keyframes zoom {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade {
+  to { opacity: 1; }
+}

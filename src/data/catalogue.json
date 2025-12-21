@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Aurora X1",
+    "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
+    "topSpeed": "220 km/h",
+    "price": "25 Lakh",
+    "mileage": "18 km/l",
+    "fuelType": "Petrol",
+    "stock": 2
+  },
+  {
+    "id": 2,
+    "name": "Aurora GT",
+    "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "topSpeed": "280 km/h",
+    "price": "45 Lakh",
+    "mileage": "15 km/l",
+    "fuelType": "Petrol",
+    "stock": 2
+  },
+  {
+    "id": 3,
+    "name": "Aurora EV",
+    "image": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
+    "topSpeed": "200 km/h",
+    "price": "35 Lakh",
+    "mileage": "450 km",
+    "fuelType": "Electric",
+    "stock": 2
+},
+  {
+    "id": 4,
+    "name": "Aurora X1",
+    "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
+    "topSpeed": "220 km/h",
+    "price": "25 Lakh",
+    "mileage": "18 km/l",
+    "fuelType": "Petrol",
+    "stock": 2
+  },
+  {
+    "id": 5,
+    "name": "Aurora GT",
+    "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "topSpeed": "280 km/h",
+    "price": "45 Lakh",
+    "mileage": "15 km/l",
+    "fuelType": "Petrol",
+    "stock": 2
+  },
+  {
+    "id": 6,
+    "name": "Aurora EV",
+    "image": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
+    "topSpeed": "200 km/h",
+    "price": "35 Lakh",
+    "mileage": "450 km",
+    "fuelType": "Electric",
+    "stock": 2
+  },
+    {
+    "id": 7,
+    "name": "Aurora X1",
+    "image": "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
+    "topSpeed": "220 km/h",
+    "price": "25 Lakh",
+    "mileage": "18 km/l",
+    "fuelType": "Petrol",
+    "stock": 2
+  },
+  {
+    "id": 8,
+    "name": "Aurora GT",
+    "image": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "topSpeed": "280 km/h",
+    "price": "45 Lakh",
+    "mileage": "15 km/l",
+    "fuelType": "Petrol",
+    "stock": 0
+  },
+  {
+    "id": 9,
+    "name": "Aurora EV",
+    "image": "https://images.unsplash.com/photo-1619767886558-efdc259cde1a",
+    "topSpeed": "200 km/h",
+    "price": "35 Lakh",
+    "mileage": "450 km",
+    "fuelType": "Electric",
+    "stock": 2
+  }
+]

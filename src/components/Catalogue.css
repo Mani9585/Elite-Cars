@@ -1,0 +1,144 @@
+.catalogue {
+  padding: 140px 60px;
+}
+
+/* ---------- HEADING ---------- */
+.catalogue-heading {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.catalogue-heading h1 {
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: white;
+}
+
+.catalogue-heading p {
+  margin-top: 14px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #aaa;
+}
+
+/* ---------- GRID ---------- */
+.catalogue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+/* ---------- CARD ---------- */
+.catalogue-card {
+  position: relative;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.04);
+  text-align: center;
+}
+
+/* IMAGE */
+.catalogue-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+/* NAME */
+.catalogue-card h3 {
+  margin-top: 20px;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: white;
+}
+
+/* ---------- SPECS ---------- */
+.specs {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.specs span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- STOCK BADGE ---------- */
+.stock-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 700;            /* 🔥 BOLD */
+  letter-spacing: 2px;
+  backdrop-filter: blur(6px);
+}
+
+/* In stock */
+.in-stock {
+  background: rgba(46, 204, 113, 0.25);
+  color: #2ecc71;
+}
+
+/* Out of stock */
+.out-stock {
+  background: rgba(211, 47, 47, 0.3);
+  color: #d32f2f;
+}
+
+/* ---------- BUTTON ---------- */
+.prebook-btn {
+  margin-top: 26px;
+  padding: 12px 32px;
+  border-radius: 30px;
+  border: none;
+  background: #d32f2f;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.prebook-btn:hover {
+  background: #b71c1c;
+}
+
+/* ---------- AVAILABLE SOON ---------- */
+.available-soon {
+  margin-top: 26px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #888;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  .catalogue-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .catalogue {
+    padding: 100px 20px;
+  }
+
+  .catalogue-heading h1 {
+    font-size: 30px;
+    letter-spacing: 3px;
+  }
+
+  .catalogue-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,33 @@
+.layout {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.bg-layer.blur {
+  filter: blur(6px);
+  transform: scale(1.05);
+}
+
+.ui-layer {
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  padding-top: 120px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding-top: 100px;
+  }
+}
