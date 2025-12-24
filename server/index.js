@@ -61,29 +61,6 @@ app.get("/cars", async (req, res) => {
 });
 
 
-//// SEED
-
-app.get("/seed", async (req, res) => {
-  await Catalogue.create({
-    company: "EliteMotors",
-    menu: [
-      {
-        id: 1,
-        name: "Aurora X1",
-        image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
-        topSpeed: "220 km/h",
-        price: "25 Lakh",
-        mileage: "18 km/l",
-        fuelType: "Petrol",
-        stock: 10
-      }
-    ]
-  });
-
-  res.send("Seeded");
-});
-
-
 // ======================================================
 // 📦 Booking API
 // ======================================================
