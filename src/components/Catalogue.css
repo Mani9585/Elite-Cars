@@ -1,5 +1,8 @@
 .catalogue {
-  padding: 140px 60px;
+  padding-top: calc(20px + 20px);
+  padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 60px;
 }
 
 /* ---------- HEADING ---------- */
@@ -121,6 +124,47 @@
   color: #888;
 }
 
+.empty-state {
+  margin-top: 120px;
+  text-align: center;
+  padding: 40px;
+  border-radius: 14px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0)
+  );
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.empty-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.empty-subtitle {
+  font-size: 18px;
+  color: #aaaaaa;
+  letter-spacing: 1px;
+}
+
+.empty-highlight {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: #e10600; /* Elite red */
+}
+
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 1024px) {
   .catalogue-grid {
@@ -130,7 +174,7 @@
 
 @media (max-width: 768px) {
   .catalogue {
-    padding: 100px 20px;
+    padding: 20px 20px 40px;
   }
 
   .catalogue-heading h1 {

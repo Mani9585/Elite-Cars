@@ -3,7 +3,7 @@ import {
   FaTachometerAlt,
   FaGasPump,
   FaRoad,
-  FaBoxOpen
+  FaRupeeSign
 } from "react-icons/fa";
 import PreBookModal from "./PreBookModal";
 import "./Catalogue.css";
@@ -15,8 +15,11 @@ export default function Catalogue() {
   // 🔥 LOAD CARS FROM BACKEND
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/cars`)
-      .then((res) => res.json())
-      .then(setCars);
+      .then(res => res.json())
+      .then(data => {
+        setCars(Array.isArray(data) ? data : []);
+      })
+      .catch(() => setCars([]));
   }, []);
 
   return (
@@ -42,7 +45,7 @@ export default function Catalogue() {
               <span><FaTachometerAlt /> {car.topSpeed}</span>
               <span><FaRoad /> {car.mileage}</span>
               <span><FaGasPump /> {car.fuelType}</span>
-              <span><FaBoxOpen /> {car.price}</span>
+              <span><FaRupeeSign /> {car.price}</span>
             </div>
 
             {car.stock > 0 ? (
@@ -52,12 +55,28 @@ export default function Catalogue() {
               >
                 Pre-Book
               </button>
-            ) : (
-              <div className="available-soon">Available Soon</div>
-            )}
+                ) : (
+                  <div className="available-soon">Available Soon</div>
+                )}
           </div>
         ))}
       </div>
+
+        {cars.length === 0 && (
+      <div className="empty-state">
+        <h2 className="empty-title">ELITE COLLECTIONS</h2>
+
+        <p className="empty-subtitle">
+          No cars available right now
+        </p>
+
+        <p className="empty-highlight">
+          New arrivals coming soon
+        </p>
+      </div>
+    )}
+
+
 
       {selectedCar && (
         <PreBookModal

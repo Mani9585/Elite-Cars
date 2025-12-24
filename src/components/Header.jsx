@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="brand">
-        <span>ELITE CARS</span>
+        <span>ELITE MOTORS</span>
         <img src={logo} alt="Elite Cars Logo" />
       </div>
 

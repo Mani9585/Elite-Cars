@@ -53,11 +53,36 @@ const isAdmin = (req) => {
 app.get("/cars", async (req, res) => {
   try {
     const catalogue = await Catalogue.findOne({});
-    res.json(catalogue.menu);
-  } catch {
-    res.status(500).json({ success: false });
+    res.json(catalogue?.menu || []);
+  } catch (err) {
+    console.error("Cars API error:", err);
+    res.json([]); // ALWAYS return array
   }
 });
+
+
+//// SEED
+
+app.get("/seed", async (req, res) => {
+  await Catalogue.create({
+    company: "EliteMotors",
+    menu: [
+      {
+        id: 1,
+        name: "Aurora X1",
+        image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738",
+        topSpeed: "220 km/h",
+        price: "25 Lakh",
+        mileage: "18 km/l",
+        fuelType: "Petrol",
+        stock: 10
+      }
+    ]
+  });
+
+  res.send("Seeded");
+});
+
 
 // ======================================================
 // 📦 Booking API
