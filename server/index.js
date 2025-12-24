@@ -8,15 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 // ======================================================
-// 🔗 MongoDB Connection
-// ======================================================
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB error:", err));
-
-// ======================================================
-// 📦 Schema (matches your data exactly)
+// 📦 Schema
 // ======================================================
 const catalogueSchema = new mongoose.Schema({
   company: String,
@@ -56,10 +48,9 @@ app.get("/cars", async (req, res) => {
     res.json(catalogue?.menu || []);
   } catch (err) {
     console.error("Cars API error:", err);
-    res.json([]); // ALWAYS return array
+    res.json([]);
   }
 });
-
 
 // ======================================================
 // 📦 Booking API
@@ -148,7 +139,7 @@ app.post("/admin/add-car", async (req, res) => {
 
   try {
     const catalogue = await Catalogue.findOne({});
-    const menu = catalogue.menu || [];
+    const menu = catalogue?.menu || [];
 
     const maxId = menu.length
       ? Math.max(...menu.map(car => car.id || 0))
@@ -160,10 +151,7 @@ app.post("/admin/add-car", async (req, res) => {
       stock: Number(req.body.stock)
     };
 
-    await Catalogue.updateOne(
-      {},
-      { $push: { menu: newCar } }
-    );
+    await Catalogue.updateOne({}, { $push: { menu: newCar } });
 
     res.json({ success: true, id: newCar.id });
   } catch (err) {
@@ -178,18 +166,36 @@ app.post("/admin/delete-car", async (req, res) => {
 
   const { name } = req.body;
 
-  await Catalogue.updateOne(
-    {},
-    { $pull: { menu: { name } } }
-  );
+  await Catalogue.updateOne({}, { $pull: { menu: { name } } });
 
   res.json({ success: true });
 });
 
 // ======================================================
-// 🚀 Start Server
+// 🟢 Health Check (recommended for Render)
+// ======================================================
+app.get("/", (req, res) => {
+  res.send("Elite Cars API is running 🚀");
+});
+
+// ======================================================
+// 🔗 MongoDB + Server Startup (CRITICAL FIX)
 // ======================================================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Backend running on port ${PORT}`)
-);
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000
+  })
+  .then(() => {
+    console.log("MongoDB connected:", mongoose.connection.name);
+
+    app.listen(PORT, () => {
+      console.log(`Backend running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("MongoDB connection failed:", err);
+    process.exit(1);
+  });
