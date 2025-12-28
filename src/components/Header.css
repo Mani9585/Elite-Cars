@@ -25,6 +25,14 @@
   letter-spacing: 3px;
 }
 
+.title {
+  font-family: "Snell Roundhand", cursive;
+  font-size: 30px;
+  font-weight: 400;
+  color: #d32f2f;
+}
+
+
 .brand img {
   width: 40px;
   margin-left: 12px;

@@ -5,7 +5,7 @@ export default function Loader() {
   return (
     <div className="loader">
       <img src={logo} alt="Elite Cars Logo" />
-      <p>ELITE CARS</p>
+      <p>ELITE MOTORS</p>
     </div>
   );
 }

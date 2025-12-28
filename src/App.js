@@ -9,13 +9,15 @@ import Catalogue from "./components/Catalogue";
 import Career from "./components/Career";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import InvoicePage from "./pages/InvoicePage";
+import InvoiceLogin from "./pages/InvoiceLogin";
 
 
 export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 2000);
+    const t = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(t);
   }, []);
 
@@ -33,6 +35,8 @@ export default function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/invoice-login" element={<InvoiceLogin />} />
+          <Route path="/invoice" element={<InvoicePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

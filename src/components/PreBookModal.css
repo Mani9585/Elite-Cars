@@ -104,3 +104,58 @@
   border-radius: 8px;
   color: white;
 }
+
+.price-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #aaa;
+}
+
+.offer-warning {
+  margin: 10px 0 16px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(211, 47, 47, 0.15);
+  color: #ff5252;
+  font-size: 13px;
+  text-align: center;
+}
+
+.modal label {
+  display: block;
+  margin: 10px 0 6px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #ff5252;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.date-error {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+
+  background: rgba(211, 47, 47, 0.15);
+  color: #ff5252;
+
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+
+  border-left: 4px solid #d32f2f;
+
+  animation: fadeInError 0.3s ease-in-out;
+}
+
+/* Smooth entrance */
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

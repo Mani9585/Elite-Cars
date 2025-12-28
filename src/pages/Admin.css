@@ -3,7 +3,7 @@
   color: white;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 .admin-header {
   display: flex;
   justify-content: space-between;
@@ -25,7 +25,7 @@
   background: #b71c1c;
 }
 
-/* CARD */
+/* ================= ADD CARD ================= */
 .admin-card {
   background: #111;
   padding: 20px;
@@ -44,9 +44,14 @@
   margin-bottom: 10px;
   border-radius: 6px;
   border: none;
+  background: #1b1b1b;
+  color: white;
 }
 
-/* ADD BUTTON */
+.admin-card input::placeholder {
+  color: #777;
+}
+
 .add-btn {
   margin-top: 10px;
   padding: 10px 24px;
@@ -61,38 +66,168 @@
   background: #27ae60;
 }
 
-/* CAR ROW */
-.admin-car-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #222;
-  padding: 14px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+/* ================= TABLE ================= */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  background-color: rgb(75, 74, 74);
+  color: white;
+  border-radius: 20px;
 }
 
-.actions button {
-  margin-left: 6px;
-  padding: 6px 10px;
+.admin-table th,
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(139, 32, 32, 0.815);
+  text-align: center;
+  font-size: 14px;
+}
+
+.admin-table th {
+  background: rgba(168, 3, 3, 0.08);
+  font-size: 13px;
+  height: 80px;
+  color: #fffb00;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.admin-table tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+/* IMAGE */
+.admin-thumb {
+  width: 90px;
+  height: 55px;
+  object-fit: cover;
   border-radius: 6px;
+}
+
+/* ACTION BUTTON */
+.edit-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #ff5252;
+  color: white;
+  font-size: 13px;
+}
+
+.edit-btn:hover {
+  background: #e10600;
+}
+
+/* ================= MODAL ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-modal {
+  background: #111;
+  padding: 30px;
+  border-radius: 14px;
+  width: 420px;
+  max-width: 90%;
+}
+
+.edit-modal h2 {
+  margin-bottom: 16px;
+}
+
+.edit-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #1b1b1b;
+  color: white;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.save-btn {
+  background: #2ecc71;
+  padding: 8px 18px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
 }
 
-.actions button:hover {
-  background: rgba(255,255,255,0.1);
+.save-btn:hover {
+  background: #27ae60;
 }
 
-/* RESPONSIVE */
+.cancel-btn {
+  background: #555;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #444;
+}
+
+.delete-btn {
+  margin-left: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #555;
+  color: white;
+  font-size: 13px;
+}
+
+.delete-btn:hover {
+  background: #b71c1c;
+}
+
+/* LABEL STYLING */
+.edit-modal label {
+  display: block;
+  margin: 10px 0 6px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #ff5252; /* Elite red accent */
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
   .admin {
-    padding: 20px 20px;
+    padding: 20px;
   }
 
   .admin-header {
     flex-direction: column;
     gap: 14px;
     align-items: flex-start;
+  }
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-thumb {
+    width: 70px;
+    height: 45px;
   }
 }

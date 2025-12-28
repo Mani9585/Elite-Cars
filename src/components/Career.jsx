@@ -11,7 +11,7 @@ export default function Career() {
 
   return (
     <section className={`career ${show ? "show" : ""}`}>
-      <h1>CAREERS AT ELITE CARS</h1>
+      <h1>CAREERS AT ELITE MOTORS</h1>
 
       <p className="subtitle">
         Build the future of mobility with us.
@@ -19,7 +19,7 @@ export default function Career() {
 
       <div className="career-content">
         <p>
-          At Elite Cars, we believe innovation starts with people.
+          At Elite Motors, we believe innovation starts with people.
           Join a team driven by performance, precision, and passion.
         </p>
 

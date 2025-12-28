@@ -1,0 +1,80 @@
+.invoice-login,
+.invoice-page {
+  max-width: 420px;
+  margin: 60px auto;
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  color: white;
+}
+
+.invoice-login h2,
+.invoice-page h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.invoice-login input,
+.invoice-page input,
+.invoice-page select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+.invoice-page button,
+.invoice-login button {
+  width: 100%;
+  padding: 12px;
+  background: #e10600;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.invoice-page button:hover,
+.invoice-login button:hover {
+  background: #b80000;
+}
+
+.price-box {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logout-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: #d32f2f;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #b71c1c;
+}
+
+.invoice-meta {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+.final-price {
+  font-weight: 700;
+  color: #2ecc71;
+}

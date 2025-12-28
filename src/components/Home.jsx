@@ -14,6 +14,20 @@ const TEXT = "ELITE PERFORMANCE";
 export default function Home() {
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
+  const [showScroll, setShowScroll] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY < 50) {
+        setShowScroll(true);   // near top → show arrow
+      } else {
+        setShowScroll(false);  // scrolled down → hide arrow
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     let i = 0;
@@ -39,6 +53,11 @@ export default function Home() {
             Luxury. Power. Precision.
           </p>
         </div>
+        {done && showScroll && (
+          <div className="scroll-arrow-wrapper">
+            <div className="scroll-arrow"></div>
+          </div>
+        )}
       </section>
 
       {/* BRAND INFO */}
@@ -118,6 +137,8 @@ export default function Home() {
 
 
           </div>
+
+          
 
         </div>
       </section>

@@ -9,6 +9,7 @@
   padding: 0 60px 180px;
   color: white;
   transform: translateY(100px);
+  position: relative;
 }
 
 .typing {
@@ -239,7 +240,59 @@
   box-shadow: 0 25px 50px rgba(0,0,0,0.4);
 }
 
+.scroll-arrow-wrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 24px;
 
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: visible;
+}
+
+
+.scroll-arrow {
+  width: 18px;
+  height: 18px;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+  transform: rotate(45deg);
+  animation: arrowBounce 1.6s infinite;
+}
+
+/* Arrow animation */
+@keyframes arrowBounce {
+  0% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.6;
+  }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* ---------- MOBILE ---------- */
 @media (max-width: 768px) {
