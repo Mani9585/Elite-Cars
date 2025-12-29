@@ -5,11 +5,13 @@ import "./Invoice.css";
 export default function InvoicePage() {
   const API = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
+
   const token = localStorage.getItem("invoiceToken");
   const sellerName = localStorage.getItem("invoiceUser");
 
-
   const [cars, setCars] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -19,11 +21,15 @@ export default function InvoicePage() {
 
   // 🔐 Auth check + load cars
   useEffect(() => {
-    if (!token) navigate("/invoice-login");
+    if (!token) {
+      navigate("/invoice-login");
+      return;
+    }
 
     fetch(`${API}/cars`)
       .then(res => res.json())
-      .then(data => setCars(Array.isArray(data) ? data : []));
+      .then(data => setCars(Array.isArray(data) ? data : []))
+      .catch(() => setCars([]));
   }, []);
 
   // 🔄 Selected car & pricing
@@ -44,27 +50,38 @@ export default function InvoicePage() {
       return;
     }
 
-    await fetch(`${API}/invoice`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        name: form.name,
-        phone: form.phone,
-        carName: form.carName,
-        originalPrice: price,
-        appliedPrice: finalPrice,
-        sale: form.sale,
-        saleApplied: form.sale > 0,
-        date,
-        time,
-        sellerName
-      })
-    });
+    setIsGenerating(true); // 🔒 disable button
 
-    alert("Invoice generated and sent to Discord");
+    try {
+      const res = await fetch(`${API}/invoice`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          carName: form.carName,
+          originalPrice: price,
+          appliedPrice: finalPrice,
+          sale: form.sale,
+          saleApplied: form.sale > 0,
+          date,
+          time,
+          sellerName
+        })
+      });
+
+      if (!res.ok) throw new Error("Invoice failed");
+
+      alert("Invoice generated and sent to Discord");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate invoice");
+    } finally {
+      setIsGenerating(false); // 🔓 re-enable if needed
+    }
   };
 
   // 🚪 Logout
@@ -76,7 +93,6 @@ export default function InvoicePage() {
 
   return (
     <div className="invoice-page">
-
       {/* HEADER */}
       <div className="invoice-header">
         <h2>Generate Invoice</h2>
@@ -132,8 +148,13 @@ export default function InvoicePage() {
         <p>Invoice Time: {time}</p>
       </div>
 
-      <button className="generate-btn" onClick={generateInvoice}>
-        Generate Invoice
+      {/* BUTTON */}
+      <button
+        className="generate-btn"
+        onClick={generateInvoice}
+        disabled={isGenerating}
+      >
+        {isGenerating ? "Generating..." : "Generate Invoice"}
       </button>
     </div>
   );

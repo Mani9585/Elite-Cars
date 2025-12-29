@@ -210,6 +210,44 @@
   text-transform: uppercase;
 }
 
+/* ================= Admin Login Page ==================*/
+.admin-login{
+  max-width: 420px;
+  margin: 60px auto;
+  background: #111;
+  padding: 30px;
+  border-radius: 12px;
+  color: white;
+}
+
+.admin-login h2{
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.admin-login input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: none;
+}
+
+.admin-login button {
+  width: 100%;
+  padding: 12px;
+  background: #e10600;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-login button:hover {
+  background: #b80000;
+}
+
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
   .admin {

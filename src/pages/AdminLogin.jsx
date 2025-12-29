@@ -27,7 +27,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div style={{ padding: 60, color: "white" }}>
+    <div className="admin-login">
       <h1>Admin Login</h1>
 
       <input

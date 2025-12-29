@@ -26,6 +26,26 @@ export const generateInvoice = async ({
   const stream = fs.createWriteStream(filePath);
   doc.pipe(stream);
 
+  /* ================= WATERMARK ================= */
+const watermarkPath = path.join(process.cwd(), "assets", "logo.png");
+
+if (fs.existsSync(watermarkPath)) {
+  const pageWidth = doc.page.width;
+  const pageHeight = doc.page.height;
+
+  doc.save();
+  doc.opacity(0.08); // 🔥 light watermark
+
+  doc.image(
+    watermarkPath,
+    pageWidth / 2 - 180,
+    pageHeight / 2 - 180,
+    { width: 360 }
+  );
+
+  doc.restore();
+}
+
   /* ================= PRICE LOGIC (FINAL) ================= */
   const basePrice = Number(price);
   const safePrice = isNaN(basePrice) ? 0 : basePrice;
@@ -139,7 +159,7 @@ export const generateInvoice = async ({
   );
 
   doc.text(
-    `TOTAL : Rs. ${total.toLocaleString("en-IN")}`,
+    `TOTAL        : Rs. ${total.toLocaleString("en-IN")}`,
     400
   );
 
@@ -157,6 +177,32 @@ export const generateInvoice = async ({
     doc.y,
     { width: 515, align: "justify" }
   );
+
+
+/* ================= SEAL ================= */
+const sealPath = path.join(process.cwd(), "assets", "seal.png");
+
+if (fs.existsSync(sealPath)) {
+  const sealSize = 90;
+
+  doc.image(
+    sealPath,
+    doc.page.width - sealSize - 40,
+    doc.page.height - sealSize - 90,
+    { width: sealSize }
+  );
+
+  doc
+    .fontSize(9)
+    .font("Helvetica-Bold")
+    .text(
+      "AUTHORIZED SEAL",
+      doc.page.width - sealSize - 40,
+      doc.page.height - 95,
+      { width: sealSize, align: "center" }
+    );
+}
+
 
   /* ================= FOOTER (FIXED) ================= */
   const footerHeight = 40;
