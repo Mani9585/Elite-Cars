@@ -6,7 +6,6 @@ import fs from "fs";
 import path from "path";
 import FormData from "form-data";
 import axios from "axios";
-import FormData from "form-data";
 import { generateInvoice } from "./utils/generateInvoice.js";
 
 const app = express();
@@ -162,7 +161,7 @@ app.post("/prebook", async (req, res) => {
       await axios.post(
         process.env.DISCORD_WEBHOOK,
         form,
-        { headers: form.getHeaders() }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
     }
     res.json({ success: true });
