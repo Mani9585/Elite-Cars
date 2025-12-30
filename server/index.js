@@ -471,7 +471,7 @@ app.post("/admin/update-car", async (req, res) => {
         "menu.$.category": car.category,
         "menu.$.topSpeed": car.topSpeed,
         "menu.$.price": Number(car.price),  // ✅ FIXED
-        "menu.$.mileage": car.mileage,
+        "menu.$.power": car.power,
         "menu.$.fuelType": car.fuelType,
         "menu.$.stock": Number(car.stock),
         "menu.$.seating": Number(car.seating),
