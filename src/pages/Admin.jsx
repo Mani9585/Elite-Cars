@@ -18,7 +18,7 @@ export default function Admin() {
     image: "",
     topSpeed: "",
     price: "",
-    mileage: "",
+    power: "",
     fuelType: "",
     stock: "",
     sale: "",
@@ -80,7 +80,7 @@ export default function Admin() {
       image: "",
       topSpeed: "",
       price: "",
-      mileage: "",
+      power: "",
       fuelType: "",
       stock: "",
       sale: "",
@@ -258,8 +258,9 @@ export default function Admin() {
           }
         />
 
-        <label>Mileage</label>
+        <label>Power</label>
         <input
+          placeholder="Eg: 500 bhp"
           value={newCar.mileage}
           onChange={(e) =>
             setNewCar({ ...newCar, mileage: e.target.value })
@@ -268,6 +269,7 @@ export default function Admin() {
 
         <label>Fuel Type</label>
         <input
+          placeholder="Eg: Petrol / Diesel"
           value={newCar.fuelType}
           onChange={(e) =>
             setNewCar({ ...newCar, fuelType: e.target.value })

@@ -11,7 +11,7 @@ export default function EditCarModal({ car, onClose, onUpdated }) {
     category: car.category,
     topSpeed: car.topSpeed,
     price: car.price,        // ✅ numeric
-    mileage: car.mileage,
+    power: car.power,
     fuelType: car.fuelType,
     stock: car.stock,
     sale: car.sale || 0,
@@ -97,12 +97,12 @@ export default function EditCarModal({ car, onClose, onUpdated }) {
         />
 
         {/* MILEAGE */}
-        <label>Mileage</label>
+        <label>Power</label>
         <input
           type="text"
-          value={form.mileage}
+          value={form.power}
           onChange={(e) =>
-            setForm({ ...form, mileage: e.target.value })
+            setForm({ ...form, power: e.target.value })
           }
         />
 

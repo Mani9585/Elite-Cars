@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { FaTachometerAlt, FaGasPump, FaRoad, FaRupeeSign, FaUsers } from "react-icons/fa";
+import { FaTachometerAlt, FaGasPump, FaRupeeSign, FaUsers } from "react-icons/fa";
+import { PiEngineBold } from "react-icons/pi";
 import PreBookModal from "./PreBookModal";
 import "./Catalogue.css";
 
@@ -110,7 +111,7 @@ export default function Catalogue() {
 
               <div className="specs">
                 <span><FaTachometerAlt /> {car.topSpeed || "Nil"}</span>
-                <span><FaRoad /> {car.mileage || "Nil"}</span>
+                <span><PiEngineBold /> {car.power || "Nil"}</span>
                 <span><FaGasPump /> {car.fuelType || "Nil"}</span>
                 <span><FaUsers /> {car.seating || "—"} Seater</span>
 

@@ -25,7 +25,7 @@ const catalogueSchema = new mongoose.Schema({
       image: String,
       topSpeed: String,
       price: Number,          // ✅ FIXED (was String)
-      mileage: String,
+      power: String,
       fuelType: String,
       stock: Number,
       sale: Number,
