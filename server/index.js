@@ -138,32 +138,36 @@ app.post("/prebook", async (req, res) => {
 
     // 📤 Discord message + PDF
     if (process.env.DISCORD_WEBHOOK) {
+      const safeOriginal = Number(originalPrice) || 0;
+      const safeApplied = Number(appliedPrice) || 0;
+
       const form = new FormData();
 
       form.append(
         "payload_json",
         JSON.stringify({
           content:
-`🚗 **NEW PRE-BOOKING**
+    `🚗 **NEW PRE-BOOKING**
 
-👤 **Customer:** ${name}
-📞 **Phone:** ${phone}
-🚘 **Car:** ${carName}
-📅 **Delivery:** ${date} ${time}
+    👤 **Customer:** ${name}
+    📞 **Phone:** ${phone}
+    🚘 **Car:** ${carName}
+    📅 **Delivery:** ${date} ${time}
 
-💸 **Sale:** ${sale}%
-✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
-💰 **Original Price:** Rs ${Number(originalPrice).toLocaleString("en-IN")}
-🤑 **Final Price:** Rs. ${Number(appliedPrice).toLocaleString("en-IN")}`
+    💸 **Sale:** ${sale}%
+    ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
+    💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
+    🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
         })
       );
 
       await axios.post(
         process.env.DISCORD_WEBHOOK,
         form,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: form.getHeaders() }
       );
     }
+
     res.json({ success: true });
   } catch (err) {
     console.error("Prebook error:", err);
