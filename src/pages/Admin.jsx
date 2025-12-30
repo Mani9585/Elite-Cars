@@ -22,7 +22,8 @@ export default function Admin() {
     fuelType: "",
     stock: "",
     sale: "",
-    saleEnd: ""
+    saleEnd: "",
+    seating: ""
   });
 
   // 👤 Invoice Users
@@ -68,6 +69,7 @@ export default function Admin() {
         ...newCar,
         price: Number(newCar.price),
         stock: Number(newCar.stock),
+        seating: Number(newCar.seating),
         sale: Number(newCar.sale) || 0
       })
     });
@@ -82,7 +84,8 @@ export default function Admin() {
       fuelType: "",
       stock: "",
       sale: "",
-      saleEnd: ""
+      saleEnd: "",
+      seating: ""
     });
 
     fetchCars();
@@ -291,6 +294,15 @@ export default function Admin() {
           }
         />
 
+        <label>Seating</label>
+        <input
+          type="number"
+          value={newCar.seating}
+          onChange={(e) =>
+            setNewCar({ ...newCar, seating: e.target.value })
+          }
+        />
+
         <label>Sale End Date & Time</label>
         <input
           type="datetime-local"
@@ -315,6 +327,7 @@ export default function Admin() {
             <th>Price</th>
             <th>Stock</th>
             <th>Sale %</th>
+            <th>Seating</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -330,6 +343,7 @@ export default function Admin() {
               <td>₹ {Number(car.price).toLocaleString("en-IN")}</td>
               <td>{car.stock}</td>
               <td>{car.sale || 0}%</td>
+              <td>{car.seating}</td>
               <td>
                 <button
                   className="edit-btn"

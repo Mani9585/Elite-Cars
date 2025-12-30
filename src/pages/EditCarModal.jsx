@@ -15,6 +15,7 @@ export default function EditCarModal({ car, onClose, onUpdated }) {
     fuelType: car.fuelType,
     stock: car.stock,
     sale: car.sale || 0,
+    seating: car.seating,
     saleEnd: car.saleEnd || ""
   });
 
@@ -29,6 +30,7 @@ export default function EditCarModal({ car, onClose, onUpdated }) {
         ...form,
         price: Number(form.price),                 // ✅ IMPORTANT
         stock: Number(form.stock),
+        seating: Number(form.seating),
         sale: Math.min(100, Math.max(0, Number(form.sale) || 0)),
         saleEnd: form.saleEnd || null
       })
@@ -122,6 +124,17 @@ export default function EditCarModal({ car, onClose, onUpdated }) {
           value={form.stock}
           onChange={(e) =>
             setForm({ ...form, stock: e.target.value })
+          }
+        />
+
+        {/* STOCK */}
+        <label>Seating Capacity</label>
+        <input
+          type="number"
+          min="0"
+          value={form.seating}
+          onChange={(e) =>
+            setForm({ ...form, seating: e.target.value })
           }
         />
 

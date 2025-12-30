@@ -16,7 +16,8 @@ export default function InvoicePage() {
     name: "",
     phone: "",
     carName: "",
-    sale: 0
+    sale: 0,
+    plate: ""
   });
 
   // 🔐 Auth check + load cars
@@ -36,7 +37,9 @@ export default function InvoicePage() {
   const selectedCar = cars.find(c => c.name === form.carName);
   const price = selectedCar ? Number(selectedCar.price) : 0;
   const discount = Math.round(price * (form.sale / 100));
-  const finalPrice = price - discount;
+  const withoutTaxPrice = price - discount;
+  const taxAmount = Math.round(withoutTaxPrice * (30 / 100));
+  const finalPrice = withoutTaxPrice + taxAmount;
 
   // 🕒 AUTO DATE & TIME
   const now = new Date();
@@ -45,7 +48,7 @@ export default function InvoicePage() {
 
   // 🧾 Generate Invoice
   const generateInvoice = async () => {
-    if (!form.name || !form.phone || !form.carName) {
+    if (!form.name || !form.phone || !form.carName || !form.plate) {
       alert("Please fill all required fields");
       return;
     }
@@ -64,9 +67,12 @@ export default function InvoicePage() {
           phone: form.phone,
           carName: form.carName,
           originalPrice: price,
+          withoutTaxPrice: withoutTaxPrice,
+          taxAmount: taxAmount,
           appliedPrice: finalPrice,
           sale: form.sale,
           saleApplied: form.sale > 0,
+          plate: form.plate,
           date,
           time,
           sellerName
@@ -125,6 +131,12 @@ export default function InvoicePage() {
           </option>
         ))}
       </select>
+
+      <input
+        placeholder="Car Number Plate"
+        value={form.plate}
+        onChange={e => setForm({ ...form, plate: e.target.value })}
+      />
 
       <input
         type="number"

@@ -1,11 +1,35 @@
+/* ======================================================
+   🌟 CATALOGUE BASE
+====================================================== */
 .catalogue {
-  padding-top: calc(20px + 20px);
+  padding-top: 40px;
   padding-left: 60px;
   padding-right: 60px;
   padding-bottom: 60px;
 }
 
-/* ---------- HEADING ---------- */
+/* ======================================================
+   🎬 PAGE ENTRY ANIMATION SYSTEM
+====================================================== */
+.catalogue [data-animate] {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.catalogue.show [data-animate] {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.catalogue.show [data-animate="1"] { transition-delay: 0.1s; }
+.catalogue.show [data-animate="2"] { transition-delay: 0.25s; }
+.catalogue.show [data-animate="3"] { transition-delay: 0.4s; }
+.catalogue.show [data-animate="4"] { transition-delay: 0.6s; }
+
+/* ======================================================
+   🏷 HEADING
+====================================================== */
 .catalogue-heading {
   text-align: center;
   margin-bottom: 80px;
@@ -25,13 +49,28 @@
   color: #aaa;
 }
 
-/* -----------------CATEGORY FILTER--------------- */
+/* ======================================================
+   🔖 CATEGORY FILTER
+====================================================== */
 .category-bar {
   display: flex;
   justify-content: center;
   gap: 14px;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
   flex-wrap: wrap;
+
+  animation: categoryPop 0.6s ease forwards;
+}
+
+@keyframes categoryPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .category-btn {
@@ -56,21 +95,40 @@
   color: white;
 }
 
-
-/* ---------- GRID ---------- */
+/* ======================================================
+   🚗 GRID
+====================================================== */
 .catalogue-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
 }
 
-/* ---------- CARD ---------- */
+/* ======================================================
+   🎴 CARD
+====================================================== */
 .catalogue-card {
   position: relative;
   padding: 30px;
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
   text-align: center;
+
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  animation: cardFadeUp 0.7s ease forwards;
+}
+
+@keyframes cardFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.catalogue-card:hover {
+  transform: translateY(-6px);
+  transition: transform 0.3s ease;
 }
 
 /* IMAGE */
@@ -89,23 +147,68 @@
   color: white;
 }
 
-/* ---------- SPECS ---------- */
+/* ======================================================
+   📊 SPECS (TABLE-LIKE, CENTERED)
+====================================================== */
 .specs {
-  margin-top: 20px;
+  margin: 20px auto 0;                 /* center the table */
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: 140px 140px;  /* fixed table columns */
+  row-gap: 14px;
+  column-gap: 32px;
   font-size: 14px;
   color: #ccc;
+  justify-content: center;             /* centers whole grid */
 }
 
 .specs span {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  white-space: nowrap;
+  justify-content: flex-start;         /* table-style alignment */
 }
 
-/* ---------- STOCK BADGE ---------- */
+
+
+/* PRICE ROW (FULL WIDTH BELOW GRID) */
+.specs .price {
+  grid-column: span 2;
+  position: relative;
+  margin-top: 16px;
+  padding-top: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-size: 15px;
+}
+
+/* TAX TEXT */
+.tax-text {
+  font-size: 12px;
+  color: #aaa;
+  margin-left: 4px;
+  letter-spacing: 1px;
+}
+
+
+/* Divider above price */
+.specs .price::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 60%;
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+}
+
+
+/* ======================================================
+   🏷 BADGES
+====================================================== */
 .stock-badge,
 .sale-badge {
   position: absolute;
@@ -116,8 +219,8 @@
   letter-spacing: 2px;
 
   backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.65);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 
   z-index: 2;
 }
@@ -152,7 +255,25 @@
   color: #ddd;
 }
 
-/* ---------- BUTTON ---------- */
+/* ======================================================
+   💰 PRICE STYLES
+====================================================== */
+.old-price {
+  margin-right: 8px;
+  text-decoration: line-through;
+  color: #888;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #ff5252;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ======================================================
+   🔘 BUTTON
+====================================================== */
 .prebook-btn {
   margin-top: 26px;
   padding: 12px 32px;
@@ -170,7 +291,9 @@
   background: #b71c1c;
 }
 
-/* ---------- AVAILABLE SOON ---------- */
+/* ======================================================
+   ⏳ AVAILABLE SOON
+====================================================== */
 .available-soon {
   margin-top: 26px;
   font-size: 14px;
@@ -178,6 +301,9 @@
   color: #888;
 }
 
+/* ======================================================
+   📭 EMPTY STATE
+====================================================== */
 .empty-state {
   margin-top: 120px;
   text-align: center;
@@ -191,8 +317,6 @@
   );
 
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
 }
 
@@ -210,29 +334,9 @@
   letter-spacing: 1px;
 }
 
-.empty-highlight {
-  margin-top: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  color: #e10600; /* Elite red */
-}
-
-/* ---------- PRICE STYLES ---------- */
-.old-price {
-  margin-right: 8px;
-  text-decoration: line-through;
-  color: #888;
-  font-size: 13px;
-}
-
-.new-price {
-  color: #ff5252;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-/* ---------- RESPONSIVE ---------- */
+/* ======================================================
+   📱 RESPONSIVE
+====================================================== */
 @media (max-width: 1024px) {
   .catalogue-grid {
     grid-template-columns: repeat(2, 1fr);

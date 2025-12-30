@@ -11,7 +11,8 @@ export const generateInvoice = async ({
   price,          // FULL AMOUNT (e.g. 2500000)
   sale,           // percentage (e.g. 5)
   saleApplied,     // true / false
-  sellerName
+  sellerName,
+  plate
 }) => {
   const invoicesDir = path.join(process.cwd(), "invoices");
 
@@ -55,7 +56,9 @@ if (fs.existsSync(watermarkPath)) {
       ? Math.round((safePrice * Number(sale)) / 100)
       : 0;
 
-  const total = safePrice - discount;
+  const withoutTaxPrice = safePrice - discount;
+  const taxAmount = Math.round(withoutTaxPrice * ( 30 / 100));
+  const total = withoutTaxPrice + taxAmount;
 
   /* ================= HEADER ================= */
   const logoPath = path.join(process.cwd(), "assets", "logo.png");
@@ -124,7 +127,7 @@ if (fs.existsSync(watermarkPath)) {
   doc.font("Helvetica");
 
   doc.text(`CAR MODEL : ${carName}`, 50);
-  doc.text("NUMBER PLATE : To Be Assigned", 50, doc.y + 15);
+  doc.text(`NUMBER PLATE : ${plate}`, 50, doc.y + 15);
 
   doc.text("1", 360, tableTop + 36);
   doc.text(
@@ -155,6 +158,11 @@ if (fs.existsSync(watermarkPath)) {
 
   doc.text(
     `DISCOUNT : Rs. ${discount.toLocaleString("en-IN")}`,
+    400
+  );
+
+  doc.text(
+    `TAX @ 30% : Rs. ${taxAmount.toLocaleString("en-IN")}`,
     400
   );
 

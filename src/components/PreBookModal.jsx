@@ -83,7 +83,11 @@ export default function PreBookModal({ car, onClose, onBooked }) {
     ? Math.round(price * (sale / 100))
     : 0;
 
-  const finalPrice = price - discountAmount;
+  const withoutTaxprice = price - discountAmount;
+
+  const taxAmount = Math.round(withoutTaxprice * (30 / 100))
+
+  const finalPrice = withoutTaxprice + taxAmount;
 
   const isFormValid =
     verified &&
@@ -112,6 +116,8 @@ export default function PreBookModal({ car, onClose, onBooked }) {
           carName: car.name,
           originalPrice: price,
           sale,
+          withoutTaxprice: withoutTaxprice,
+          taxAmount: taxAmount,
           appliedPrice: finalPrice,
           saleApplied: saleActive
         })

@@ -29,7 +29,8 @@ const catalogueSchema = new mongoose.Schema({
       fuelType: String,
       stock: Number,
       sale: Number,
-      saleEnd: String
+      saleEnd: String,
+      seating: Number
     }
   ]
 });
@@ -216,7 +217,10 @@ app.post("/invoice", async (req, res) => {
       appliedPrice,
       sale,
       saleApplied,
-      sellerName
+      sellerName,
+      plate,
+      withoutTaxPrice,
+      taxAmount
     } = req.body;
 
     // 🔍 Stock check
@@ -238,7 +242,8 @@ app.post("/invoice", async (req, res) => {
       price: Number(originalPrice),   // ✅ ENSURE NUMBER
       sale: Number(sale),
       saleApplied,
-      sellerName
+      sellerName,
+      plate
     });
 
     // 📤 Discord message + PDF
@@ -265,11 +270,15 @@ app.post("/invoice", async (req, res) => {
 🚘 **Car:** ${carName}
 📅 **Delivery:** ${date} ${time}
 🙎 **Seller Staff:** ${sellerName}
+🔢 **Car Number Plate:** ${plate}
 
 💸 **Sale:** ${sale}%
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${Number(originalPrice).toLocaleString("en-IN")}
-🤑 **Final Price:** Rs. ${Number(appliedPrice).toLocaleString("en-IN")}`
+🤑 **Discounted Price:** Rs. ${Number(withoutTaxPrice).toLocaleString("en-IN")}
+🙏 **Tax Amount:** Rs. ${Number(taxAmount).toLocaleString("en-IN")}
+🪙 **Total Amount:** Rs. ${Number(withoutTaxPrice + taxAmount).toLocaleString("en-IN")}`
+
         })
       );
 
@@ -431,6 +440,7 @@ app.post("/admin/add-car", async (req, res) => {
       price: Number(req.body.price),   // ✅ FORCE NUMBER
       stock: Number(req.body.stock),
       sale: Number(req.body.sale) || 0,
+      seating: Number(req.body.seating),
       saleEnd: req.body.saleEnd || null
     };
 
@@ -460,6 +470,7 @@ app.post("/admin/update-car", async (req, res) => {
         "menu.$.mileage": car.mileage,
         "menu.$.fuelType": car.fuelType,
         "menu.$.stock": Number(car.stock),
+        "menu.$.seating": Number(car.seating),
         "menu.$.sale": Math.max(0, Number(car.sale) || 0),
         "menu.$.saleEnd": car.saleEnd || null
       }

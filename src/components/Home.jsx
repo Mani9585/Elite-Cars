@@ -8,6 +8,8 @@ import {
   FaPhoneAlt
 } from "react-icons/fa";
 import "./Home.css";
+import logo from "../assets/logo.png"; // adjust path if needed
+
 
 const TEXT = "ELITE PERFORMANCE";
 
@@ -15,19 +17,39 @@ export default function Home() {
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
   const [showScroll, setShowScroll] = useState(true);
+  const [logoOpacity, setLogoOpacity] = useState(1);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY < 50) {
-        setShowScroll(true);   // near top → show arrow
-      } else {
-        setShowScroll(false);  // scrolled down → hide arrow
-      }
-    };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+useEffect(() => {
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+
+    // Scroll arrow logic
+    if (scrollY < 50) {
+      setShowScroll(true);
+    } else {
+      setShowScroll(false);
+    }
+
+    // Logo fade-out (first screen only)
+    const fadeStart = 50;
+    const fadeEnd = window.innerHeight * 0.6;
+
+    if (scrollY <= fadeStart) {
+      setLogoOpacity(1);
+    } else if (scrollY >= fadeEnd) {
+      setLogoOpacity(0);
+    } else {
+      const opacity =
+        1 - (scrollY - fadeStart) / (fadeEnd - fadeStart);
+      setLogoOpacity(opacity);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
 
   useEffect(() => {
     let i = 0;
@@ -44,7 +66,8 @@ export default function Home() {
     <>
       {/* HERO */}
       <section className="home-hero">
-        <div className="hero">
+        <div className="hero-layout">
+          <div className="hero">
           <h1 className="typing">
             {text}
             {!done && <span className="cursor">|</span>}
@@ -52,12 +75,24 @@ export default function Home() {
           <p className={`sub ${done ? "show" : ""}`}>
             Luxury. Power. Precision.
           </p>
-        </div>
-        {done && showScroll && (
-          <div className="scroll-arrow-wrapper">
-            <div className="scroll-arrow"></div>
           </div>
-        )}
+          {done && showScroll && (
+            <div className="scroll-arrow-wrapper">
+              <div className="scroll-arrow"></div>
+            </div>
+          )}
+          {/* BRAND LOGO (BOTTOM RIGHT – HERO ONLY) */}
+          <div
+            className="brand-logo-wrapper"
+            style={{ opacity: logoOpacity }}
+          >
+            <img
+              src={logo}
+              alt="Elite Cars Logo"
+              className="brand-logo"
+            />
+          </div>
+        </div>
       </section>
 
       {/* BRAND INFO */}
