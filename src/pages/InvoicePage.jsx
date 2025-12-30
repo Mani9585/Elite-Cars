@@ -11,6 +11,7 @@ export default function InvoicePage() {
 
   const [cars, setCars] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const tax = 10;
 
   const [form, setForm] = useState({
     name: "",
@@ -38,7 +39,7 @@ export default function InvoicePage() {
   const price = selectedCar ? Number(selectedCar.price) : 0;
   const discount = Math.round(price * (form.sale / 100));
   const withoutTaxPrice = price - discount;
-  const taxAmount = Math.round(withoutTaxPrice * (30 / 100));
+  const taxAmount = Math.round(withoutTaxPrice * (tax / 100));
   const finalPrice = withoutTaxPrice + taxAmount;
 
   // 🕒 AUTO DATE & TIME

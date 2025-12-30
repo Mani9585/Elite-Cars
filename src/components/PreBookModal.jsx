@@ -11,6 +11,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
   const [num2, setNum2] = useState(0);
   const [answer, setAnswer] = useState("");
   const [captchaError, setCaptchaError] = useState("");
+  const tax = 10;
 
   // FORM STATE
   const [form, setForm] = useState({
@@ -85,7 +86,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
 
   const withoutTaxprice = price - discountAmount;
 
-  const taxAmount = Math.round(withoutTaxprice * (30 / 100))
+  const taxAmount = Math.round(withoutTaxprice * (tax / 100))
 
   const finalPrice = withoutTaxprice + taxAmount;
 

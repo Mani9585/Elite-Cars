@@ -25,6 +25,7 @@ export const generateInvoice = async ({
 
   const doc = new PDFDocument({ size: "A4", margin: 40 });
   const stream = fs.createWriteStream(filePath);
+  const tax = 10;
   doc.pipe(stream);
 
   /* ================= WATERMARK ================= */
@@ -57,7 +58,7 @@ if (fs.existsSync(watermarkPath)) {
       : 0;
 
   const withoutTaxPrice = safePrice - discount;
-  const taxAmount = Math.round(withoutTaxPrice * ( 30 / 100));
+  const taxAmount = Math.round(withoutTaxPrice * ( tax / 100));
   const total = withoutTaxPrice + taxAmount;
 
   /* ================= HEADER ================= */
@@ -162,7 +163,7 @@ if (fs.existsSync(watermarkPath)) {
   );
 
   doc.text(
-    `TAX @ 30% : Rs. ${taxAmount.toLocaleString("en-IN")}`,
+    `TAX @ ${tax}% : Rs. ${taxAmount.toLocaleString("en-IN")}`,
     400
   );
 
