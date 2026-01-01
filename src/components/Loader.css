@@ -1,30 +1,140 @@
+/* ===========================
+   BASE
+=========================== */
+
 .loader {
-  height: 100vh;
+  height: 80vh;          /* ✅ your preference */
   background: black;
+
+  display: grid;
+  place-items: center;
+}
+
+/* Optical centering container */
+.loader-center {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+
+  /* optional fine-tune */
+  transform: translateY(-8px);
 }
+
+
+/* ===========================
+   LOGO
+=========================== */
 
 .loader img {
   width: 120px;
-  animation: zoom 2s ease;
+  margin-bottom: 12px;
+  animation: logoIn 1.8s ease forwards;
 }
+
+/* ===========================
+   BRAND TEXT
+=========================== */
 
 .loader p {
-  margin-top: 20px;
-  color: white;
+  font-size: 14px;
   letter-spacing: 4px;
+  color: white;
   opacity: 0;
-  animation: fade 2s forwards 1.5s;
+  animation: fadeIn 1.4s forwards 0.8s;
 }
 
-@keyframes zoom {
-  from { transform: scale(0.6); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* ===========================
+   PROGRESS %
+=========================== */
+
+.loader-progress {
+  margin-top: 12px;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #d32f2f;
 }
 
-@keyframes fade {
-  to { opacity: 1; }
+/* ===========================
+   PREMIUM PROGRESS BAR
+=========================== */
+
+.loader-bar {
+  width: 260px;
+  height: 6px;
+  margin-top: 18px;
+
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fill */
+.loader-bar-fill {
+  height: 100%;
+  width: 0%;
+
+  background: linear-gradient(
+    90deg,
+    #d32f2f,
+    #ff5252,
+    #d32f2f
+  );
+
+  border-radius: 6px;
+
+  box-shadow:
+    0 0 10px rgba(211, 47, 47, 0.6),
+    0 0 20px rgba(211, 47, 47, 0.35);
+
+  transition: width 0.25s ease;
+}
+
+/* Light sweep */
+.loader-bar-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -40px;
+  width: 40px;
+  height: 100%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+
+  animation: sweep 1.4s linear infinite;
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+@keyframes logoIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sweep {
+  from {
+    left: -40px;
+  }
+  to {
+    left: 100%;
+  }
 }
