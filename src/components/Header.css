@@ -1,9 +1,28 @@
+/* ===========================
+   Root
+=========================== */
+
+:root {
+  --header-height: 80px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 70px;
+  }
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
 .header {
   position: fixed;
   top: 0;
   width: 100%;
   height: 80px;
   padding: 20px 60px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,23 +38,52 @@
   z-index: 100;
 }
 
+/* ===========================
+   BRAND
+=========================== */
+
 .brand {
   display: flex;
   align-items: center;
   letter-spacing: 3px;
 }
 
-/* .title {
-  font-family: "Snell Roundhand", cursive;
-  font-size: 30px;
-  font-weight: 400;
-  color: #d32f2f;
-} */
+.title {
+  font-family: "Cinzel", serif;
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: 4px;
 
+  color: #ffffff;
+
+  /* subtle luxury accent */
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #d32f2f,
+    #ffffff
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(211, 47, 47, 0.25);
+
+  transition: transform 0.3s ease;
+}
 
 .brand img {
   width: 40px;
-  margin-left: 12px;
+  margin-right: 12px;
+}
+
+/* ===========================
+   NAV (DESKTOP)
+=========================== */
+
+.nav {
+  display: flex;
 }
 
 .nav a {
@@ -43,14 +91,109 @@
   text-decoration: none;
   color: white;
   position: relative;
+  letter-spacing: 1.5px;
+
+  transition:
+    color 0.3s ease,
+    transform 0.25s ease,
+    text-shadow 0.25s ease;
 }
 
-.nav a.active::after {
+/* ACTIVE underline (only active has underline) */
+.nav a::after {
   content: "";
   position: absolute;
-  width: 100%;
-  height: 2px;
-  background: white;
   left: 0;
   bottom: -6px;
+  width: 100%;
+  height: 2px;
+  background: #d32f2f;
+
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+
+/* Hover = glow */
+.nav a:hover {
+  color: #ff5252;
+  text-shadow:
+    0 0 6px rgba(211, 47, 47, 0.7),
+    0 0 12px rgba(211, 47, 47, 0.5);
+}
+
+
+/* Active route */
+.nav a.active {
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+/* Active underline stays */
+.nav a.active::after {
+  transform: scaleX(1);
+}
+
+
+/* ===========================
+   MENU TOGGLE (HIDDEN DESKTOP)
+=========================== */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ===========================
+   MOBILE VIEW
+=========================== */
+
+@media (max-width: 768px) {
+
+  .header {
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+
+  /* Show menu icon */
+  .menu-toggle {
+    display: block;
+    z-index: 200;
+  }
+
+  /* Hide nav initially */
+  .nav {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(10px);
+
+    flex-direction: column;
+    align-items: center;
+
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  /* Open state */
+  .nav.open {
+    max-height: 300px;
+  }
+
+  .nav a {
+    margin: 20px 0;
+    font-size: 16px;
+  }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import logo from "../assets/logo.png"
 import "./Career.css";
 
 export default function Career() {
@@ -11,6 +12,15 @@ export default function Career() {
 
   return (
     <section className={`career ${show ? "show" : ""}`}>
+      <div
+        className="brand-logo-wrapper"
+      >
+        <img
+          src={logo}
+          alt="Elite Cars Logo"
+          className="brand-logo"
+        />
+      </div>
       <h1 data-animate="1">CAREERS AT ELITE MOTORS</h1>
 
       <p className="subtitle" data-animate="2">

@@ -161,7 +161,7 @@ useEffect(() => {
             <div className="showroom-info">
                 <div className="showroom-card">
                     <FaMapMarkerAlt className="showroom-icon" />
-                    <span className="showroom-text">To be Updated...</span>
+                    <span className="showroom-text">8191, Popular Street, PD Back Side</span>
                 </div>
 
                 <div className="showroom-card">

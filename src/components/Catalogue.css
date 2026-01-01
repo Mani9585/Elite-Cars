@@ -47,7 +47,57 @@
   font-size: 14px;
   letter-spacing: 2px;
   color: #aaa;
+
 }
+
+/* ===========================
+   CATALOGUE BRAND LOGO
+=========================== */
+
+.catalogue-heading {
+  position: relative;
+  text-align: center;
+  margin-top: -80px;      /* 🔥 reduce gap from header */
+  margin-bottom: 60px;  /* keeps balance below */
+  text-align: center;
+}
+
+/* Wrapper */
+.catalogue-heading .brand-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto 16px;  /* 🔥 perfectly centered + less space */
+  padding: 0;
+  width: 100%;
+}
+
+
+/* Logo itself */
+.catalogue-heading .brand-logo {
+  width: 80px;        /* 🔥 smaller than home */
+  height: auto;
+  display: block;
+
+  /* SAME PREMIUM GLOW AS HOME (SUBTLE) */
+  filter:
+    drop-shadow(0 0 5px rgba(211, 47, 47, 0.4))
+    drop-shadow(0 0 12px rgba(211, 47, 47, 0.25))
+    drop-shadow(0 0 22px rgba(211, 47, 47, 0.15));
+
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Optional hover polish */
+.catalogue-heading .brand-logo:hover {
+  transform: scale(1.05);
+  filter:
+    drop-shadow(0 0 8px rgba(211, 47, 47, 0.55))
+    drop-shadow(0 0 18px rgba(211, 47, 47, 0.35))
+    drop-shadow(0 0 32px rgba(211, 47, 47, 0.2));
+}
+
 
 /* ======================================================
    🔖 CATEGORY FILTER
@@ -99,10 +149,12 @@
    🚗 GRID
 ====================================================== */
 .catalogue-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;   /* ⭐ THIS is the key */
   gap: 40px;
 }
+
 
 /* ======================================================
    🎴 CARD
@@ -113,10 +165,11 @@
   border-radius: 20px;
   background: rgba(255,255,255,0.04);
   text-align: center;
-
+  flex: 0 0 calc((100% - 80px) / 3);
   opacity: 0;
   transform: translateY(40px) scale(0.96);
   animation: cardFadeUp 0.7s ease forwards;
+  box-sizing: border-box;
 
   /* ✨ Glow base */
   box-shadow:
@@ -395,14 +448,34 @@
    📱 RESPONSIVE
 ====================================================== */
 @media (max-width: 1024px) {
-  .catalogue-grid {
-    grid-template-columns: repeat(2, 1fr);
+   .catalogue-card {
+    flex: 0 0 calc((100% - 40px) / 2);
+  }
+  .catalogue-card {
+    width: calc(50% - 40px);
   }
 }
 
 @media (max-width: 768px) {
   .catalogue {
     padding: 20px 20px 40px;
+  }
+
+  .catalogue-card {
+    flex: 0 0 90%;
+  }
+
+  .catalogue-heading {
+    margin-top: -80px;
+    margin-bottom: 40px;
+  }
+
+  .catalogue-heading .brand-logo {
+    width: 60px;
+  }
+
+  .catalogue-heading .brand-logo-wrapper {
+    margin-bottom: 12px;
   }
 
   .catalogue-heading h1 {

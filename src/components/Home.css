@@ -1,16 +1,11 @@
-/* ---------- HERO ---------- */
+/* ===========================
+   HERO
+=========================== */
 
 .home-hero {
-  height: calc(100vh - 120px);
+  min-height: calc(100vh - var(--header-height));
   display: flex;
-  align-items: flex-end;
-}
-
-.hero {
-  padding: 0 60px 180px;
-  color: white;
-  transform: translateY(100px);
-  position: relative;
+  align-items: stretch; /* 🔥 FIX */
 }
 
 .hero-layout {
@@ -18,18 +13,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  margin-top: auto;    /* 🔥 pushes hero down */
+  margin-bottom: 13vh;  /* 🔥 controls ~90% position */
 }
 
 .hero {
-  padding-left: 80px;
+  padding: 0 60px;     /* 🔥 remove vh padding */
+  color: white;
+  transform: none;
 }
 
-.brand-logo-wrapper {
-  padding-right: 80px;
-}
-
+/* ===========================
+   HERO TEXT
+=========================== */
 
 .typing {
+  margin-top: 60px;
   font-size: 56px;
   font-weight: 300;
   letter-spacing: 6px;
@@ -44,78 +44,138 @@
   margin-top: 14px;
   font-size: 16px;
   letter-spacing: 2px;
-  /* color: #ccc; */
   color: #d32f2f;
   opacity: 0;
-  transition: 0.6s;
+  transition: opacity 0.6s ease;
 }
 
 .sub.show {
   opacity: 1;
 }
 
-/* ---------- BRAND LOGO WRAPPER ------------ */
+/* ===========================
+   BRAND LOGO (FIXED)
+=========================== */
+
 .brand-logo-wrapper {
+  padding-right: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  transition: opacity 0.4s ease;
-  animation: logoPop 0.8s ease-out forwards;
+  margin-top: 0;
+  /* IMPORTANT */
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  overflow: visible;
 }
-
-
 
 .brand-logo {
   width: 250px;
   height: auto;
+  display: block;
 
-  filter: drop-shadow(0 0 8px #e1060099);
-  animation: glowPulse 2.5s infinite ease-in-out;
-  transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.brand-logo:hover {
-  transform: scale(1.1);
+  /* ENHANCED PREMIUM GLOW */
   filter:
-    drop-shadow(0 0 14px rgba(225, 6, 0, 0.9))
-    drop-shadow(0 0 28px rgba(225, 6, 0, 0.5));
+    drop-shadow(0 0 8px rgba(211, 47, 47, 0.45))
+    drop-shadow(0 0 18px rgba(211, 47, 47, 0.25))
+    drop-shadow(0 0 32px rgba(211, 47, 47, 0.15));
+
+  /* MOTION */
+  animation:
+    logoFloat 6s ease-in-out infinite,
+    logoGlow 4.5s ease-in-out infinite;
+
+  transition: transform 0.4s ease, filter 0.4s ease;
 }
 
+/* Subtle hover only */
+.brand-logo:hover {
+  transform: scale(1.04);
+  filter:
+    drop-shadow(0 0 10px rgba(211, 47, 47, 0.45))
+    drop-shadow(0 0 22px rgba(211, 47, 47, 0.25));
+}
 
+/* ===========================
+   LOGO ANIMATIONS (PREMIUM)
+=========================== */
 
-@keyframes logoPop {
+/* Gentle vertical float */
+@keyframes logoFloat {
   0% {
-    transform: scale(0.6);
-    opacity: 0;
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
   100% {
-    transform: scale(1);
-    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes glowPulse {
+/* Slow breathing glow */
+@keyframes logoGlow {
   0% {
-    filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.5));
+    filter:
+      drop-shadow(0 0 6px rgba(211, 47, 47, 0.35))
+      drop-shadow(0 0 14px rgba(211, 47, 47, 0.2))
+      drop-shadow(0 0 26px rgba(211, 47, 47, 0.12));
   }
   50% {
     filter:
-      drop-shadow(0 0 14px rgba(225, 6, 0, 0.9))
-      drop-shadow(0 0 28px rgba(225, 6, 0, 0.5));
+      drop-shadow(0 0 12px rgba(211, 47, 47, 0.6))
+      drop-shadow(0 0 28px rgba(211, 47, 47, 0.35))
+      drop-shadow(0 0 44px rgba(211, 47, 47, 0.22));
   }
   100% {
-    filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.5));
+    filter:
+      drop-shadow(0 0 6px rgba(211, 47, 47, 0.35))
+      drop-shadow(0 0 14px rgba(211, 47, 47, 0.2))
+      drop-shadow(0 0 26px rgba(211, 47, 47, 0.12));
   }
 }
 
+/* ===========================
+   SCROLL ARROW
+=========================== */
+
+.scroll-arrow-wrapper {
+  position: fixed;            /* FIXED for all screens */
+  bottom: 28px;               /* distance from bottom */
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 50;                /* above logo */
+  pointer-events: none;       /* no interaction */
+}
 
 
-/* ---------- BRAND INFO ---------- */
+.scroll-arrow {
+  width: 18px;
+  height: 18px;
+  border-right: 2px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+  transform: rotate(45deg);
+  animation: arrowBounce 1.6s infinite;
+}
+
+/* ===========================
+   BRAND INFO
+=========================== */
+
 .brand-info {
   padding: 120px 60px;
   backdrop-filter: blur(8px);
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .brand-container {
@@ -124,7 +184,6 @@
   color: white;
 }
 
-/* Center heading */
 .brand-heading {
   max-width: 800px;
   margin: 0 auto;
@@ -149,7 +208,10 @@
   line-height: 1.6;
 }
 
-/* ---------- FEATURE GRID ---------- */
+/* ===========================
+   FEATURES
+=========================== */
+
 .features-grid {
   display: flex;
   flex-direction: column;
@@ -173,28 +235,21 @@
 .feature-card {
   text-align: center;
   padding: 50px 40px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 18px;
-  transition: transform 0.4s ease,
-              background 0.4s ease,
-              box-shadow 0.4s ease;
+  transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
 }
 
 .feature-card:hover {
   transform: translateY(-10px);
-  background: rgba(255,255,255,0.08);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .feature-icon {
   font-size: 34px;
   color: #d32f2f;
   margin-bottom: 18px;
-  transition: transform 0.4s ease;
-}
-
-.feature-card:hover .feature-icon {
-  transform: scale(1.15);
 }
 
 .feature-card h3 {
@@ -210,7 +265,10 @@
   color: #bbb;
 }
 
-/* ---------- STATS SECTION ---------- */
+/* ===========================
+   STATS
+=========================== */
+
 .stats-section {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -222,19 +280,16 @@
   text-align: center;
   padding: 50px 30px;
   border-radius: 18px;
-  background: rgba(255,255,255,0.04);
-  transition: transform 0.4s ease,
-              background 0.4s ease,
-              box-shadow 0.4s ease;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .stat-card.highlight {
   background: linear-gradient(
     135deg,
-    rgba(211,47,47,0.25),
-    rgba(211,47,47,0.05)
+    rgba(211, 47, 47, 0.25),
+    rgba(211, 47, 47, 0.05)
   );
-  box-shadow: 0 20px 40px rgba(211,47,47,0.25);
+  box-shadow: 0 20px 40px rgba(211, 47, 47, 0.25);
 }
 
 .stat-card h3 {
@@ -250,13 +305,10 @@
   color: #ccc;
 }
 
-.stat-card:hover {
-  transform: translateY(-10px);
-  background: rgba(255,255,255,0.08);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-}
+/* ===========================
+   SHOWROOM
+=========================== */
 
-/* ---------- SHOWROOM SECTION ---------- */
 .showroom-section {
   margin-top: 140px;
   text-align: center;
@@ -268,80 +320,120 @@
   letter-spacing: 4px;
 }
 
-/* ---------- SHOWROOM CARDS ---------- */
 .showroom-info {
   margin-top: 50px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px;
   max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
 }
 
 .showroom-card {
   height: 180px;
   padding: 30px;
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 18px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-
-  transition: transform 0.4s ease,
-              background 0.4s ease,
-              box-shadow 0.4s ease;
 }
 
-/* Big icon */
 .showroom-icon {
   font-size: 48px;
   color: #d32f2f;
 }
 
-/* Bottom text */
 .showroom-text {
   font-size: 14px;
   letter-spacing: 2px;
   color: #ccc;
 }
 
-/* Hover (inherits automotive feel) */
-.showroom-card:hover {
-  transform: translateY(-10px);
-  background: rgba(255,255,255,0.08);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+/* ===========================
+   MOBILE
+=========================== */
+@media (min-width: 769px) {
+  .hero {
+    padding-bottom: 8vh;
+  }
 }
 
-.scroll-arrow-wrapper {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 24px;
+@media (max-width: 768px) {
+  .hero-layout {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
 
-  width: 32px;
-  height: 32px;
+   .home-hero {
+    height: auto;
+    min-height: calc(84vh - var(--header-height));
+    align-items: flex-start;
+  }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  .hero {
+    padding: 40px 20px 80px;
+  }
 
-  overflow: visible;
+  .typing {
+    font-size: 34px;
+    letter-spacing: 2px;
+  }
+
+  .brand-logo-wrapper {
+    padding: 0;
+    order: -1;
+    margin-top: 0; /* NO negative margins on mobile */
+  }
+
+ .scroll-arrow-wrapper {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    z-index: 50; /* above logo */
+    pointer-events: none;
+  }
+
+  .scroll-arrow {
+    width: 14px;
+    height: 14px;
+  }
+
+  .brand-logo {
+    width: 280px;
+  }
+
+  .brand-info {
+    padding: 80px 20px;
+  }
+
+  .feature-row,
+  .stats-section,
+  .showroom-info {
+    grid-template-columns: 1fr;
+  }
 }
 
-
-.scroll-arrow {
-  width: 18px;
-  height: 18px;
-  border-right: 2px solid rgba(255, 255, 255, 0.6);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
-  transform: rotate(45deg);
-  animation: arrowBounce 1.6s infinite;
+@media (min-width: 1024px) {
+  .scroll-arrow-wrapper {
+    bottom: 36px;
+  }
 }
 
-/* Arrow animation */
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 @keyframes arrowBounce {
   0% {
     transform: translateY(0) rotate(45deg);
@@ -354,145 +446,5 @@
   100% {
     transform: translateY(0) rotate(45deg);
     opacity: 0.6;
-  }
-}
-
-/* Fade in */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ---------- MOBILE ---------- */
-@media (max-width: 768px) {
-
-  /* HERO WRAPPER */
-  .home-hero {
-    height: auto;
-    padding-top: 40px;
-  }
-
-  /* HERO LAYOUT */
-  .hero-layout {
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 28px;
-    text-align: center;
-  }
-
-  /* HERO TEXT */
-  .hero {
-    padding: 0 20px 120px;
-    transform: translateY(0);
-  }
-
-  /* TYPING TEXT (FIX OVERFLOW) */
-  .typing {
-    font-size: 34px;
-    letter-spacing: 2px;
-    line-height: 1.3;
-    max-width: 100%;
-    word-break: break-word;
-  }
-
-  /* SUB TEXT */
-  .sub {
-    font-size: 14px;
-    letter-spacing: 1.5px;
-  }
-
-  /* BRAND LOGO POSITION (TOP CENTER) */
-  .brand-logo-wrapper {
-    order: -1; /* Moves logo above text */
-    padding: 0;
-    margin-bottom: 10px;
-  }
-
-  .brand-logo {
-    width: 320px;
-    filter: drop-shadow(0 0 10px rgba(225, 6, 0, 0.8));
-  }
-
-  /* BRAND INFO SECTION */
-  .brand-info {
-    padding: 80px 20px;
-  }
-
-  /* FEATURE GRID */
-  .feature-row {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  /* STATS */
-  .stats-section {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 80px;
-  }
-
-  /* SHOWROOM */
-  .showroom-section {
-    margin-top: 100px;
-  }
-
-  .showroom-info {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .showroom-card {
-    height: 160px;
-  }
-  .hero {
-    padding: 0 20px 140px;
-    transform: translateY(40px);
-  }
-
-  .brand-info {
-    padding: 80px 20px;
-  }
-
-  .feature-row {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .stats-section {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 80px;
-  }
-  .showroom-section {
-    margin-top: 100px;
-  }
-
-  .showroom-info {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .showroom-card {
-    height: 160px;
-  }
-
-  .hero-layout {
-    flex-direction: column;
-    padding: 0 20px;
-    gap: 20px;
-  }
-}
-
-/* ---------- ANIMATION ---------- */
-@keyframes blink {
-  50% {
-    opacity: 0;
   }
 }

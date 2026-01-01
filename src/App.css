@@ -7,6 +7,7 @@
 
 body {
   background: black;
+  padding-top: 80px; /* desktop header height */
 }
 
 /* ============================= */
@@ -137,5 +138,8 @@ body {
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
     display: none;
+  }
+  body {
+    padding-top: 70px; /* mobile header height */
   }
 }

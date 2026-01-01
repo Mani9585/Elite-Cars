@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaTachometerAlt, FaGasPump, FaRupeeSign, FaUsers } from "react-icons/fa";
 import { PiEngineBold } from "react-icons/pi";
+import logo from "../assets/logo.png"
 import PreBookModal from "./PreBookModal";
 import "./Catalogue.css";
 
@@ -53,6 +54,16 @@ export default function Catalogue() {
 
       {/* HEADING */}
       <div className="catalogue-heading">
+        <div 
+          data-animate="1"
+          className="brand-logo-wrapper"
+        >
+          <img
+              src={logo}
+              alt="Elite Cars Logo"
+              className="brand-logo"
+          />
+        </div>
         <h1 data-animate="1">Elite Collections</h1>
         <p data-animate="2">
           Handpicked luxury vehicles crafted for performance and prestige

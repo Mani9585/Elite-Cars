@@ -14,6 +14,54 @@
   transform: translateY(0);
 }
 
+/* ===========================
+   CAREER BRAND LOGO
+=========================== */
+
+.career {
+  position: relative;
+  text-align: center;
+  margin-top: -80px;      /* 🔥 reduce gap from header */
+  margin-bottom: 60px;  /* keeps balance below */
+  text-align: center;
+}
+
+/* Wrapper */
+.career .brand-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto 16px;  /* 🔥 perfectly centered + less space */
+  padding: 0;
+  width: 100%;
+}
+
+
+/* Logo itself */
+.career .brand-logo {
+  width: 80px;        /* 🔥 smaller than home */
+  height: auto;
+  display: block;
+
+  /* SAME PREMIUM GLOW AS HOME (SUBTLE) */
+  filter:
+    drop-shadow(0 0 5px rgba(211, 47, 47, 0.4))
+    drop-shadow(0 0 12px rgba(211, 47, 47, 0.25))
+    drop-shadow(0 0 22px rgba(211, 47, 47, 0.15));
+
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* Optional hover polish */
+.career .brand-logo:hover {
+  transform: scale(1.05);
+  filter:
+    drop-shadow(0 0 8px rgba(211, 47, 47, 0.55))
+    drop-shadow(0 0 18px rgba(211, 47, 47, 0.35))
+    drop-shadow(0 0 32px rgba(211, 47, 47, 0.2));
+}
+
 .career h1 {
   font-size: 42px;
   font-weight: 300;
@@ -72,6 +120,16 @@
 @media (max-width: 768px) {
   .career {
     padding: 40px 20px;
+    margin-top: -80px;
+    margin-bottom: 40px;
+  }
+
+  .career .brand-logo {
+    width: 60px;
+  }
+
+  .career .brand-logo-wrapper {
+    margin-bottom: 12px;
   }
 
   .career h1 {
