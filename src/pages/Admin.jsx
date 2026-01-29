@@ -36,15 +36,14 @@ export default function Admin() {
 
   // 🔐 Auth
   useEffect(() => {
-  if (!token) {
-    navigate("/admin-login");
-    return;
-  }
+    if (!token) {
+      navigate("/admin-login");
+      return;
+    }
 
-  fetchCars();
-  fetchInvoiceUsers();
-}, [token, navigate]);
-
+    fetchCars();
+    fetchInvoiceUsers();
+  }, [token, navigate, fetchCars, fetchInvoiceUsers]);
 
   const logout = () => {
     localStorage.removeItem("adminToken");
