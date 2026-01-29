@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Invoice.css";
 
@@ -21,20 +21,31 @@ export default function InvoicePage() {
     plate: ""
   });
 
-  // 🔐 Auth check + load cars
+  // ================= FETCH CARS =================
+
+  const fetchCars = useCallback(async () => {
+    try {
+      const res = await fetch(`${API}/cars`);
+      const data = await res.json();
+      setCars(Array.isArray(data) ? data : []);
+    } catch {
+      setCars([]);
+    }
+  }, [API]);
+
+  // ================= AUTH =================
+
   useEffect(() => {
     if (!token) {
       navigate("/invoice-login");
       return;
     }
 
-    fetch(`${API}/cars`)
-      .then(res => res.json())
-      .then(data => setCars(Array.isArray(data) ? data : []))
-      .catch(() => setCars([]));
-  }, []);
+    fetchCars();
+  }, [token, navigate, fetchCars]);
 
-  // 🔄 Selected car & pricing
+  // ================= PRICING =================
+
   const selectedCar = cars.find(c => c.name === form.carName);
   const price = selectedCar ? Number(selectedCar.price) : 0;
   const discount = Math.round(price * (form.sale / 100));
@@ -42,19 +53,21 @@ export default function InvoicePage() {
   const taxAmount = Math.round(withoutTaxPrice * (tax / 100));
   const finalPrice = withoutTaxPrice + taxAmount;
 
-  // 🕒 AUTO DATE & TIME
+  // ================= DATE & TIME =================
+
   const now = new Date();
   const date = now.toISOString().split("T")[0];
   const time = now.toTimeString().slice(0, 5);
 
-  // 🧾 Generate Invoice
+  // ================= INVOICE =================
+
   const generateInvoice = async () => {
     if (!form.name || !form.phone || !form.carName || !form.plate) {
       alert("Please fill all required fields");
       return;
     }
 
-    setIsGenerating(true); // 🔒 disable button
+    setIsGenerating(true);
 
     try {
       const res = await fetch(`${API}/invoice`, {
@@ -68,8 +81,8 @@ export default function InvoicePage() {
           phone: form.phone,
           carName: form.carName,
           originalPrice: price,
-          withoutTaxPrice: withoutTaxPrice,
-          taxAmount: taxAmount,
+          withoutTaxPrice,
+          taxAmount,
           appliedPrice: finalPrice,
           sale: form.sale,
           saleApplied: form.sale > 0,
@@ -87,28 +100,28 @@ export default function InvoicePage() {
       console.error(err);
       alert("Failed to generate invoice");
     } finally {
-      setIsGenerating(false); // 🔓 re-enable if needed
+      setIsGenerating(false);
     }
   };
 
-  // 🚪 Logout
+  // ================= LOGOUT =================
+
   const logout = () => {
     localStorage.removeItem("invoiceToken");
     localStorage.removeItem("invoiceUser");
     navigate("/invoice-login");
   };
 
+  // ================= UI =================
+
   return (
     <div className="invoice-page">
-      {/* HEADER */}
+
       <div className="invoice-header">
         <h2>Generate Invoice</h2>
-        <button className="logout-btn" onClick={logout}>
-          Logout
-        </button>
+        <button className="logout-btn" onClick={logout}>Logout</button>
       </div>
 
-      {/* FORM */}
       <input
         placeholder="Customer Name"
         value={form.name}
@@ -127,7 +140,7 @@ export default function InvoicePage() {
       >
         <option value="">Select Car</option>
         {cars.map(car => (
-          <option key={car.id} value={car.name}>
+          <option key={car.name} value={car.name}>
             {car.name}
           </option>
         ))}
@@ -146,7 +159,6 @@ export default function InvoicePage() {
         onChange={e => setForm({ ...form, sale: Number(e.target.value) })}
       />
 
-      {/* PRICE SUMMARY */}
       <div className="price-summary">
         <p>Original Price: ₹ {price.toLocaleString("en-IN")}</p>
         <p>Discount: ₹ {discount.toLocaleString("en-IN")}</p>
@@ -155,13 +167,11 @@ export default function InvoicePage() {
         </p>
       </div>
 
-      {/* AUTO DATE INFO */}
       <div className="invoice-meta">
         <p>Invoice Date: {date}</p>
         <p>Invoice Time: {time}</p>
       </div>
 
-      {/* BUTTON */}
       <button
         className="generate-btn"
         onClick={generateInvoice}
@@ -169,6 +179,7 @@ export default function InvoicePage() {
       >
         {isGenerating ? "Generating..." : "Generate Invoice"}
       </button>
+
     </div>
   );
 }
