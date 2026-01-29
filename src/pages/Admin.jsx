@@ -34,6 +34,23 @@ export default function Admin() {
     Password: ""
   });
 
+  // Fetch Cars API
+  const fetchCars = useCallback(async () => {
+    const res = await fetch(`${API}/cars`);
+    const data = await res.json();
+    setCars(Array.isArray(data) ? data : []);
+  }, [API]);
+
+  //Fetch Invoice Users
+  const fetchInvoiceUsers = useCallback(async () => {
+    const res = await fetch(`${API}/admin/invoice-users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    setInvoiceUsers(Array.isArray(data) ? data : []);
+  }, [API, token]);
+
+
   // 🔐 Auth
   useEffect(() => {
     if (!token) {
@@ -51,13 +68,6 @@ export default function Admin() {
   };
 
   /* ================= CAR APIs ================= */
-
-  const fetchCars = useCallback(async () => {
-    const res = await fetch(`${API}/cars`);
-    const data = await res.json();
-    setCars(Array.isArray(data) ? data : []);
-  }, [API]);
-
   const addCar = async () => {
     if (!newCar.name || !newCar.category || !newCar.price) {
       alert("Fill all required fields");
@@ -112,15 +122,6 @@ export default function Admin() {
   };
 
   /* ================= INVOICE USER APIs ================= */
-
-  const fetchInvoiceUsers = useCallback(async () => {
-    const res = await fetch(`${API}/admin/invoice-users`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    setInvoiceUsers(Array.isArray(data) ? data : []);
-  }, [API, token]);
-
   const addInvoiceUser = async () => {
     if (!newUser.UserName || !newUser.Password) {
       alert("Username & Password required");
