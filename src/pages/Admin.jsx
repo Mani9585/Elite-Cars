@@ -36,17 +36,25 @@ export default function Admin() {
   // ================= FETCH FUNCTIONS =================
 
   const fetchCars = useCallback(async () => {
-    const res = await fetch(`${API}/cars`);
-    const data = await res.json();
-    setCars(Array.isArray(data) ? data : []);
+    try {
+      const res = await fetch(`${API}/cars`);
+      const data = await res.json();
+      setCars(Array.isArray(data) ? data : []);
+    } catch {
+      setCars([]);
+    }
   }, [API]);
 
   const fetchInvoiceUsers = useCallback(async () => {
-    const res = await fetch(`${API}/admin/invoice-users`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    setInvoiceUsers(Array.isArray(data) ? data : []);
+    try {
+      const res = await fetch(`${API}/admin/invoice-users`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setInvoiceUsers(Array.isArray(data) ? data : []);
+    } catch {
+      setInvoiceUsers([]);
+    }
   }, [API, token]);
 
   // ================= AUTH =================
@@ -60,6 +68,8 @@ export default function Admin() {
     fetchCars();
     fetchInvoiceUsers();
   }, [token, navigate, fetchCars, fetchInvoiceUsers]);
+
+  // ================= LOGOUT =================
 
   const logout = () => {
     localStorage.removeItem("adminToken");
@@ -162,6 +172,7 @@ export default function Admin() {
   return (
     <div className="admin">
 
+      {/* HEADER */}
       <div className="admin-header">
         <h1>Admin – Elite Motors</h1>
         <button className="logout-btn" onClick={logout}>Logout</button>
@@ -211,7 +222,47 @@ export default function Admin() {
         </table>
       </div>
 
-      {/* ================= CARS ================= */}
+      {/* ================= ADD NEW CAR ================= */}
+      <div className="admin-card">
+        <h2>Add New Car</h2>
+
+        <input placeholder="Car Name" value={newCar.name}
+          onChange={(e) => setNewCar({ ...newCar, name: e.target.value })} />
+
+        <input placeholder="Category" value={newCar.category}
+          onChange={(e) => setNewCar({ ...newCar, category: e.target.value })} />
+
+        <input placeholder="Image URL" value={newCar.image}
+          onChange={(e) => setNewCar({ ...newCar, image: e.target.value })} />
+
+        <input placeholder="Top Speed" value={newCar.topSpeed}
+          onChange={(e) => setNewCar({ ...newCar, topSpeed: e.target.value })} />
+
+        <input type="number" placeholder="Price" value={newCar.price}
+          onChange={(e) => setNewCar({ ...newCar, price: e.target.value })} />
+
+        <input placeholder="Power" value={newCar.power}
+          onChange={(e) => setNewCar({ ...newCar, power: e.target.value })} />
+
+        <input placeholder="Fuel Type" value={newCar.fuelType}
+          onChange={(e) => setNewCar({ ...newCar, fuelType: e.target.value })} />
+
+        <input type="number" placeholder="Stock" value={newCar.stock}
+          onChange={(e) => setNewCar({ ...newCar, stock: e.target.value })} />
+
+        <input type="number" placeholder="Sale %" value={newCar.sale}
+          onChange={(e) => setNewCar({ ...newCar, sale: e.target.value })} />
+
+        <input type="number" placeholder="Seating" value={newCar.seating}
+          onChange={(e) => setNewCar({ ...newCar, seating: e.target.value })} />
+
+        <input type="datetime-local" value={newCar.saleEnd}
+          onChange={(e) => setNewCar({ ...newCar, saleEnd: e.target.value })} />
+
+        <button className="add-btn" onClick={addCar}>Add Car</button>
+      </div>
+
+      {/* ================= CARS TABLE ================= */}
       <table className="admin-table">
         <tbody>
           {cars.map((car) => (
