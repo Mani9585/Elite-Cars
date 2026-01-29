@@ -18,37 +18,30 @@ export default function Catalogue() {
   // ❤️ Health Check – Wake Render Backend
   // ======================================================
   useEffect(() => {
-    fetch(`${API}/health`).catch(() => {});
-  }, [API]);
+  let alive = true;
 
-  // ======================================================
-  // 🔄 Fetch Cars
-  // ======================================================
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchCars = async () => {
-      try {
-        const res = await fetch(`${API}/cars`);
-        const data = await res.json();
-
-        if (!isMounted) return;
-
-        setCars(Array.isArray(data) ? data : []);
-      } catch {
-        if (isMounted) setCars([]);
-      } finally {
-        if (isMounted) setLoading(false); // ✅ stop loader only after fetch
+  const wakeAndLoad = async () => {
+    try {
+      // Wait until backend is truly awake
+      while (true) {
+        const res = await fetch(`${API}/health`);
+        if (res.ok) break;
+        await new Promise(r => setTimeout(r, 1500));
       }
-    };
 
-    fetchCars();
-    const interval = setInterval(fetchCars, 5000);
+      // Now fetch cars
+      const carsRes = await fetch(`${API}/cars`);
+      const data = await carsRes.json();
+      if (alive) setCars(Array.isArray(data) ? data : []);
+    } catch {
+      if (alive) setCars([]);
+    } finally {
+      if (alive) setLoading(false);
+    }
+  };
 
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
+  wakeAndLoad();
+  return () => (alive = false);
   }, [API]);
 
   // ======================================================

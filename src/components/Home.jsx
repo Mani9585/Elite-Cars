@@ -141,7 +141,7 @@ useEffect(() => {
           {/* STATS */}
           <div className="stats-section">
             <div className="stat-card highlight">
-              <h3>200+</h3>
+              <h3>300+</h3>
               <p>Exotic Cars Sold</p>
             </div>
             <div className="stat-card highlight">
@@ -161,12 +161,14 @@ useEffect(() => {
             <div className="showroom-info">
                 <div className="showroom-card">
                     <FaMapMarkerAlt className="showroom-icon" />
-                    <span className="showroom-text">8191, Popular Street, PD Back Side</span>
+                    <span className="showroom-text">7081, Spanish Avenue</span>
                 </div>
 
                 <div className="showroom-card">
                     <FaPhoneAlt className="showroom-icon" />
-                    <span className="showroom-text">To be Updated...</span>
+                    <span className="contact-text">Silku Papa - 99166</span>
+                    <span className="contact-text">Guna Thambi - 5142</span>
+                    <span className="contact-text">Nagi Seishiro - 4482</span>
                 </div>
             </div>
 
