@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditCarModal from "./EditCarModal";
+import { useCallback } from "react";
 import "./Admin.css";
 
 export default function Admin() {
@@ -33,43 +34,17 @@ export default function Admin() {
     Password: ""
   });
 
-  // ================= FETCH FUNCTIONS =================
-
-  const fetchCars = useCallback(async () => {
-    try {
-      const res = await fetch(`${API}/cars`);
-      const data = await res.json();
-      setCars(Array.isArray(data) ? data : []);
-    } catch {
-      setCars([]);
-    }
-  }, [API]);
-
-  const fetchInvoiceUsers = useCallback(async () => {
-    try {
-      const res = await fetch(`${API}/admin/invoice-users`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setInvoiceUsers(Array.isArray(data) ? data : []);
-    } catch {
-      setInvoiceUsers([]);
-    }
-  }, [API, token]);
-
-  // ================= AUTH =================
-
+  // 🔐 Auth
   useEffect(() => {
-    if (!token) {
-      navigate("/admin-login");
-      return;
-    }
+  if (!token) {
+    navigate("/admin-login");
+    return;
+  }
 
-    fetchCars();
-    fetchInvoiceUsers();
-  }, [token, navigate, fetchCars, fetchInvoiceUsers]);
+  fetchCars();
+  fetchInvoiceUsers();
+}, [token, navigate]);
 
-  // ================= LOGOUT =================
 
   const logout = () => {
     localStorage.removeItem("adminToken");
@@ -77,6 +52,12 @@ export default function Admin() {
   };
 
   /* ================= CAR APIs ================= */
+
+  const fetchCars = useCallback(async () => {
+    const res = await fetch(`${API}/cars`);
+    const data = await res.json();
+    setCars(Array.isArray(data) ? data : []);
+  }, [API]);
 
   const addCar = async () => {
     if (!newCar.name || !newCar.category || !newCar.price) {
@@ -133,6 +114,14 @@ export default function Admin() {
 
   /* ================= INVOICE USER APIs ================= */
 
+  const fetchInvoiceUsers = useCallback(async () => {
+    const res = await fetch(`${API}/admin/invoice-users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    setInvoiceUsers(Array.isArray(data) ? data : []);
+  }, [API, token]);
+
   const addInvoiceUser = async () => {
     if (!newUser.UserName || !newUser.Password) {
       alert("Username & Password required");
@@ -167,8 +156,6 @@ export default function Admin() {
     fetchInvoiceUsers();
   };
 
-  // ================= UI =================
-
   return (
     <div className="admin">
 
@@ -178,21 +165,21 @@ export default function Admin() {
         <button className="logout-btn" onClick={logout}>Logout</button>
       </div>
 
-      {/* ================= INVOICE USERS ================= */}
+      {/* ================= ADD INVOICE USER ================= */}
       <div className="admin-card">
         <h2>Invoice User Management</h2>
 
+        <label>User Name</label>
         <input
-          placeholder="Username"
           value={newUser.UserName}
           onChange={(e) =>
             setNewUser({ ...newUser, UserName: e.target.value })
           }
         />
 
+        <label>Password</label>
         <input
           type="password"
-          placeholder="Password"
           value={newUser.Password}
           onChange={(e) =>
             setNewUser({ ...newUser, Password: e.target.value })
@@ -204,9 +191,17 @@ export default function Admin() {
         </button>
 
         <table className="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
           <tbody>
             {invoiceUsers.map((u) => (
               <tr key={u.id}>
+                <td>{u.id}</td>
                 <td>{u.UserName}</td>
                 <td>
                   <button
@@ -222,57 +217,154 @@ export default function Admin() {
         </table>
       </div>
 
-      {/* ================= ADD NEW CAR ================= */}
+      {/* ➕ ADD NEW CAR */}
       <div className="admin-card">
         <h2>Add New Car</h2>
 
-        <input placeholder="Car Name" value={newCar.name}
-          onChange={(e) => setNewCar({ ...newCar, name: e.target.value })} />
+        <label>Car Name</label>
+        <input
+          value={newCar.name}
+          onChange={(e) =>
+            setNewCar({ ...newCar, name: e.target.value })
+          }
+        />
 
-        <input placeholder="Category" value={newCar.category}
-          onChange={(e) => setNewCar({ ...newCar, category: e.target.value })} />
+        <label>Category</label>
+        <input
+          placeholder="SUV / Sedan / Sports / Electric"
+          value={newCar.category}
+          onChange={(e) =>
+            setNewCar({ ...newCar, category: e.target.value })
+          }
+        />
 
-        <input placeholder="Image URL" value={newCar.image}
-          onChange={(e) => setNewCar({ ...newCar, image: e.target.value })} />
+        <label>Image URL</label>
+        <input
+          value={newCar.image}
+          onChange={(e) =>
+            setNewCar({ ...newCar, image: e.target.value })
+          }
+        />
 
-        <input placeholder="Top Speed" value={newCar.topSpeed}
-          onChange={(e) => setNewCar({ ...newCar, topSpeed: e.target.value })} />
+        <label>Top Speed</label>
+        <input
+          value={newCar.topSpeed}
+          onChange={(e) =>
+            setNewCar({ ...newCar, topSpeed: e.target.value })
+          }
+        />
 
-        <input type="number" placeholder="Price" value={newCar.price}
-          onChange={(e) => setNewCar({ ...newCar, price: e.target.value })} />
+        <label>Price (Full Amount)</label>
+        <input
+          type="number"
+          placeholder="Eg: 2500000"
+          value={newCar.price}
+          onChange={(e) =>
+            setNewCar({ ...newCar, price: e.target.value })
+          }
+        />
 
-        <input placeholder="Power" value={newCar.power}
-          onChange={(e) => setNewCar({ ...newCar, power: e.target.value })} />
+        <label>Power</label>
+        <input
+          placeholder="Eg: 500 bhp"
+          value={newCar.mileage}
+          onChange={(e) =>
+            setNewCar({ ...newCar, mileage: e.target.value })
+          }
+        />
 
-        <input placeholder="Fuel Type" value={newCar.fuelType}
-          onChange={(e) => setNewCar({ ...newCar, fuelType: e.target.value })} />
+        <label>Fuel Type</label>
+        <input
+          placeholder="Eg: Petrol / Diesel"
+          value={newCar.fuelType}
+          onChange={(e) =>
+            setNewCar({ ...newCar, fuelType: e.target.value })
+          }
+        />
 
-        <input type="number" placeholder="Stock" value={newCar.stock}
-          onChange={(e) => setNewCar({ ...newCar, stock: e.target.value })} />
+        <label>Stock</label>
+        <input
+          type="number"
+          value={newCar.stock}
+          onChange={(e) =>
+            setNewCar({ ...newCar, stock: e.target.value })
+          }
+        />
 
-        <input type="number" placeholder="Sale %" value={newCar.sale}
-          onChange={(e) => setNewCar({ ...newCar, sale: e.target.value })} />
+        <label>Sale (%)</label>
+        <input
+          type="number"
+          min="0"
+          max="100"
+          value={newCar.sale}
+          onChange={(e) =>
+            setNewCar({ ...newCar, sale: e.target.value })
+          }
+        />
 
-        <input type="number" placeholder="Seating" value={newCar.seating}
-          onChange={(e) => setNewCar({ ...newCar, seating: e.target.value })} />
+        <label>Seating</label>
+        <input
+          type="number"
+          value={newCar.seating}
+          onChange={(e) =>
+            setNewCar({ ...newCar, seating: e.target.value })
+          }
+        />
 
-        <input type="datetime-local" value={newCar.saleEnd}
-          onChange={(e) => setNewCar({ ...newCar, saleEnd: e.target.value })} />
+        <label>Sale End Date & Time</label>
+        <input
+          type="datetime-local"
+          value={newCar.saleEnd}
+          onChange={(e) =>
+            setNewCar({ ...newCar, saleEnd: e.target.value })
+          }
+        />
 
-        <button className="add-btn" onClick={addCar}>Add Car</button>
+        <button className="add-btn" onClick={addCar}>
+          Add Car
+        </button>
       </div>
 
       {/* ================= CARS TABLE ================= */}
       <table className="admin-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Sale %</th>
+            <th>Seating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
         <tbody>
           {cars.map((car) => (
-            <tr key={car.name}>
+            <tr key={car.id}>
+              <td>
+                <img src={car.image} alt={car.name} className="admin-thumb" />
+              </td>
               <td>{car.name}</td>
+              <td>{car.category}</td>
               <td>₹ {Number(car.price).toLocaleString("en-IN")}</td>
               <td>{car.stock}</td>
+              <td>{car.sale || 0}%</td>
+              <td>{car.seating}</td>
               <td>
-                <button onClick={() => setSelectedCar(car)}>Edit</button>
-                <button onClick={() => deleteCar(car.name)}>Delete</button>
+                <button
+                  className="edit-btn"
+                  onClick={() => setSelectedCar(car)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteCar(car.name)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
