@@ -320,73 +320,63 @@
   letter-spacing: 4px;
 }
 
+/* Grid */
 .showroom-info {
   margin-top: 50px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px;
-  max-width: 700px;
+  max-width: 760px;
   margin-inline: auto;
 }
 
+/* Card */
 .showroom-card {
-  height: 180px;
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
 
-.showroom-icon {
-  font-size: 48px;
-  color: #d32f2f;
-}
-
-.showroom-text {
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: #ccc;
-}
-
-.contact-text {
-  font-size: 11px;
-  letter-spacing: 4px;
-  color: #e6e6e6;
-  font-family: "Orbitron", "Poppins", sans-serif;
-}
-
-.showroom-card {
-  width: 380px;
-  padding: 28px 30px;
+  padding: 32px 28px;
   border-radius: 20px;
   background:
     linear-gradient(145deg, rgba(255,255,255,0.06), rgba(0,0,0,0.7)),
-    rgba(10,10,10,0.8);
+    rgba(10,10,10,0.85);
+
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+
   box-shadow:
     0 0 35px rgba(255,0,0,0.25),
-    inset 0 0 40px rgba(255,255,255,0.03);
+    inset 0 0 40px rgba(255,255,255,0.04);
+
   border: 1px solid rgba(255,255,255,0.08);
 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+
   position: relative;
-  overflow: hidden;   /* keeps glow inside */
-  padding-top: 40px;  /* gives room for the icon */
+  overflow: hidden;
 }
 
+/* Red glow line on top */
+.showroom-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff2a2a, transparent);
+  filter: blur(2px);
+}
+
+/* Icon */
 .showroom-icon {
-  font-size: 42px;
+  font-size: 44px;
   color: #ff2a2a;
-  margin-bottom: 14px;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 10px;
 
   filter:
     drop-shadow(0 0 10px rgba(255,0,0,0.9))
@@ -395,10 +385,32 @@
   animation: ring 1.4s infinite alternate;
 }
 
+/* Icon pulse */
 @keyframes ring {
   from { transform: scale(1); }
   to { transform: scale(1.12); }
 }
+
+/* Title text */
+.showroom-text {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #ccc;
+  margin-top: 30px;
+}
+
+/* Contacts */
+.contact-text {
+  width: 100%;
+  text-align: center;
+  font-family: "Orbitron", "Poppins", sans-serif;
+  letter-spacing: 2.5px;
+  font-size: 12px;
+  color: #e6e6e6;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
 
 
 /* ===========================
