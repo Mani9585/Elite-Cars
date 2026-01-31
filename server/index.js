@@ -4,9 +4,11 @@ import cors from "cors";
 import mongoose from "mongoose";
 import fs from "fs";
 import https from "https";
-import FormData from "form-data";
+import { FormData } from "formdata-node";
 import axios from "axios";
 import { generateInvoice } from "./utils/generateInvoice.js";
+import fetch from "node-fetch";
+
 
 const app = express();
 app.use(cors());
@@ -219,14 +221,26 @@ app.post("/prebook", async (req, res) => {
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
       }
 
-      sendDiscord(process.env.DISCORD_WEBHOOK, payload, {
-      httpsAgent,
-      headers: {
-        "User-Agent": "EliteMotors/1.0",
-        "Content-Type": "application/json"
-      },
-      timeout: 15000
-    }).catch(err => console.error("Discord failed:", err.message));
+      
+      try {
+        const res = await fetch(process.env.DISCORD_WEBHOOK, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-Agent": "EliteMotors/1.0"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Discord error ${res.status}: ${text}`);
+        }
+
+        console.log("✅ Prebook sent to Discord");
+      } catch (e) {
+        console.error("❌ Prebook Discord failed:", e.message);
+      }
     }
 
     res.json({ success: true });
@@ -287,8 +301,6 @@ app.post("/invoice", async (req, res) => {
       withoutTaxPrice,
       taxAmount
     } = req.body;
-
-    console.log("📥 Invoice Request:", req.body);
 
     // ===============================
     // 🔍 Stock Check
@@ -371,16 +383,24 @@ app.post("/invoice", async (req, res) => {
         })
       );
 
-      await sendDiscordFile(process.env.INVOICE_WEBHOOK, form, {
-        httpsAgent,
-        headers: {
-          ...form.getHeaders(),
-          "User-Agent": "EliteMotors/1.0"
-        },
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity,
-        timeout: 20000
-      }).catch(err => console.error("Discord failed:", err.message));
+      try {
+        const res = await fetch(process.env.INVOICE_WEBHOOK, {
+          method: "POST",
+          body: form,
+          headers: {
+            "User-Agent": "EliteMotors/1.0"
+          }
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Discord error ${res.status}: ${text}`);
+        }
+
+        console.log("✅ Invoice sent to Discord");
+      } catch (e) {
+        console.error("❌ Discord upload failed:", e.message);
+      }
     }
 
     // ===============================
