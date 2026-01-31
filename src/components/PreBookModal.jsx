@@ -211,7 +211,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
             {/* PHONE */}
             <label>Phone Number</label>
             <input
-              placeholder="Eg: 9876543210"
+              placeholder="Eg: 12345"
               value={form.phone}
               onChange={(e) =>
                 setForm({ ...form, phone: e.target.value })
