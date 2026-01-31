@@ -166,7 +166,13 @@ app.post("/prebook", async (req, res) => {
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-      });
+      },
+    {
+      headers: {
+        "User-Agent": "EliteMotors/1.0",
+        "Content-Type": "application/json"
+      }
+    });
     }
 
     res.json({ success: true });
@@ -313,7 +319,10 @@ app.post("/invoice", async (req, res) => {
       );
 
       await axios.post(process.env.INVOICE_WEBHOOK, form, {
-        headers: form.getHeaders(),
+        headers: {
+          ...form.getHeaders(),
+          "User-Agent": "EliteMotors/1.0"
+        },
         maxContentLength: Infinity,
         maxBodyLength: Infinity
       });
