@@ -4,8 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import fs from "fs";
 import https from "https";
-import { FormData } from "formdata-node";
-import axios from "axios";
+import { FormData, File } from "formdata-node";
 import { generateInvoice } from "./utils/generateInvoice.js";
 import fetch from "node-fetch";
 
@@ -18,44 +17,28 @@ app.use(express.json());
 /* ======================================================
    📦 Discord Helper
 ====================================================== */
-const sendDiscord = async (url, payload, config = {}, attempt = 1) => {
+const sendBotMessage = async (content) => {
   try {
-    await axios.post(url, payload, config);
-    console.log("✅ Discord sent");
-  } catch (err) {
-    const status = err.response?.status;
+    const res = await fetch(
+      `https://discord.com/api/v10/channels/${process.env.ORDER_CHANNEL_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bot ${process.env.ORDER_BOT_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ content })
+      }
+    );
 
-    if (status === 429 && attempt <= 5) {
-      const retryAfter = err.response.data?.retry_after || 2000;
-      console.log(`⏳ Discord rate limited. Retrying in ${retryAfter}ms (Attempt ${attempt})`);
-
-      await new Promise(r => setTimeout(r, retryAfter));
-      return sendDiscord(url, payload, config, attempt + 1);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text);
     }
-
-    console.error("❌ Discord failed:", err.response?.data || err.message);
+  } catch (e) {
+    console.error("Bot send failed:", e.message);
   }
 };
-
-const sendDiscordFile = async (url, form, config, attempt = 1) => {
-  try {
-    await axios.post(url, form, config);
-    console.log("✅ Invoice sent to Discord");
-  } catch (err) {
-    const status = err.response?.status;
-
-    if (status === 429 && attempt <= 5) {
-      const retryAfter = err.response.data?.retry_after || 3000;
-      console.log(`⏳ Discord rate limited. Retrying invoice in ${retryAfter}ms (Attempt ${attempt})`);
-
-      await new Promise(r => setTimeout(r, retryAfter));
-      return sendDiscordFile(url, form, config, attempt + 1);
-    }
-
-    console.error("❌ Invoice Discord failed:", err.response?.data || err.message);
-  }
-};
-
 
 /* ======================================================
    📦 Http Agent
@@ -202,12 +185,12 @@ app.post("/prebook", async (req, res) => {
     );
 
     // 📤 Discord message (Render-safe, no FormData)
-    if (process.env.DISCORD_WEBHOOK) {
+    if (process.env.ORDER_BOT_TOKEN && process.env.ORDER_CHANNEL_ID) {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
-
-      const payload = {
-        content:
+   
+      try {
+        await sendBotMessage(
 `🚗 **NEW PRE-BOOKING**
 
 👤 **Customer:** ${name}
@@ -219,30 +202,13 @@ app.post("/prebook", async (req, res) => {
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-      }
-
-      
-      try {
-        const res = await fetch(process.env.DISCORD_WEBHOOK, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Agent": "EliteMotors/1.0"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Discord error ${res.status}: ${text}`);
-        }
+        );
 
         console.log("✅ Prebook sent to Discord");
       } catch (e) {
         console.error("❌ Prebook Discord failed:", e.message);
       }
     }
-
     res.json({ success: true });
   } catch (err) {
     console.error("Prebook error:", err);
@@ -344,22 +310,22 @@ app.post("/invoice", async (req, res) => {
     // ===============================
     // 📤 Send to Discord (multipart is required here)
     // ===============================
-    if (process.env.INVOICE_WEBHOOK) {
+    if (process.env.ORDER_BOT_TOKEN && process.env.INVOICE_CHANNEL_ID) {
       const form = new FormData();
 
       if (!fs.existsSync(filePath)) {
         throw new Error("Invoice PDF not found: " + filePath);
       }
 
+      const fileBuffer = fs.readFileSync(filePath);
+
+      // Attach PDF
       form.append(
         "files[0]",
-        fs.createReadStream(filePath),
-        {
-          filename: fileName,
-          contentType: "application/pdf"
-        }
+        new File([fileBuffer], fileName, { type: "application/pdf" })
       );
 
+      // Message
       form.append(
         "payload_json",
         JSON.stringify({
@@ -370,36 +336,33 @@ app.post("/invoice", async (req, res) => {
 📞 **Phone:** ${phone}
 🚘 **Car:** ${carName}
 📅 **Delivery:** ${date} ${time}
-🙎 **Seller Staff:** ${sellerName}
-🔢 **Car Plate:** ${plate}
+🙎 **Seller:** ${sellerName}
+🔢 **Plate:** ${plate}
 
-💸 **Sale:** ${discount}%
-✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
-
-💰 **Original Price:** Rs. ${original.toLocaleString("en-IN")}
-🤑 **Discounted Price:** Rs. ${withoutTax.toLocaleString("en-IN")}
-🙏 **Tax Amount:** Rs. ${tax.toLocaleString("en-IN")}
-🪙 **Total Amount:** Rs. ${total.toLocaleString("en-IN")}`
+💰 **Total:** Rs. ${total.toLocaleString("en-IN")}`
         })
       );
 
       try {
-        const res = await fetch(process.env.INVOICE_WEBHOOK, {
-          method: "POST",
-          body: form,
-          headers: {
-            "User-Agent": "EliteMotors/1.0"
+        const res = await fetch(
+          `https://discord.com/api/v10/channels/${process.env.INVOICE_CHANNEL_ID}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Authorization": `Bot ${process.env.ORDER_BOT_TOKEN}`
+            },
+            body: form
           }
-        });
+        );
 
         if (!res.ok) {
           const text = await res.text();
-          throw new Error(`Discord error ${res.status}: ${text}`);
+          throw new Error(`Discord Bot error ${res.status}: ${text}`);
         }
 
-        console.log("✅ Invoice sent to Discord");
+        console.log("✅ Invoice sent via Discord Bot");
       } catch (e) {
-        console.error("❌ Discord upload failed:", e.message);
+        console.error("❌ Bot upload failed:", e.message);
       }
     }
 
