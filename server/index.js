@@ -162,7 +162,7 @@ app.post("/prebook", async (req, res) => {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
 
-      axios.post(process.env.DISCORD_WEBHOOK, {
+      await axios.post(process.env.DISCORD_WEBHOOK, {
         content:
 `🚗 **NEW PRE-BOOKING**
 
@@ -328,7 +328,7 @@ app.post("/invoice", async (req, res) => {
         })
       );
 
-      axios.post(process.env.INVOICE_WEBHOOK, form, {
+      await axios.post(process.env.INVOICE_WEBHOOK, form, {
         httpsAgent,
         headers: {
           ...form.getHeaders(),

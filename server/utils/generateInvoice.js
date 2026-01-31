@@ -14,7 +14,7 @@ export const generateInvoice = async ({
   sellerName,
   plate
 }) => {
-  const invoicesDir = path.join(process.cwd(), "invoices");
+  const invoicesDir = path.join(process.cwd(), "tmp","invoices");
 
   if (!fs.existsSync(invoicesDir)) {
     fs.mkdirSync(invoicesDir, { recursive: true });
