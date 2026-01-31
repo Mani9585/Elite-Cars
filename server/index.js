@@ -340,13 +340,15 @@ app.post("/invoice", async (req, res) => {
     // ===============================
     // 🧹 Delete PDF (Render-safe)
     // ===============================
-    if (fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (e) {
-        console.error("❌ Failed to delete invoice:", e.message);
-      }
-    }
+    setTimeout(() => {
+      fs.unlink(filePath, err => {
+        if (err) {
+          console.error("❌ Failed to delete invoice:", err.message);
+        } else {
+          console.log("🧹 Invoice deleted:", filePath);
+        }
+      });
+    }, 10_000); // wait 10 seconds so stream is fully closed
 
     res.json({ success: true });
 
