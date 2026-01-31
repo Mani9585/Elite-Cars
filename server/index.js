@@ -14,6 +14,48 @@ app.use(express.json());
 
 
 /* ======================================================
+   📦 Discord Helper
+====================================================== */
+const sendDiscord = async (url, payload, config = {}, attempt = 1) => {
+  try {
+    await axios.post(url, payload, config);
+    console.log("✅ Discord sent");
+  } catch (err) {
+    const status = err.response?.status;
+
+    if (status === 429 && attempt <= 5) {
+      const retryAfter = err.response.data?.retry_after || 2000;
+      console.log(`⏳ Discord rate limited. Retrying in ${retryAfter}ms (Attempt ${attempt})`);
+
+      await new Promise(r => setTimeout(r, retryAfter));
+      return sendDiscord(url, payload, config, attempt + 1);
+    }
+
+    console.error("❌ Discord failed:", err.response?.data || err.message);
+  }
+};
+
+const sendDiscordFile = async (url, form, config, attempt = 1) => {
+  try {
+    await axios.post(url, form, config);
+    console.log("✅ Invoice sent to Discord");
+  } catch (err) {
+    const status = err.response?.status;
+
+    if (status === 429 && attempt <= 5) {
+      const retryAfter = err.response.data?.retry_after || 3000;
+      console.log(`⏳ Discord rate limited. Retrying invoice in ${retryAfter}ms (Attempt ${attempt})`);
+
+      await new Promise(r => setTimeout(r, retryAfter));
+      return sendDiscordFile(url, form, config, attempt + 1);
+    }
+
+    console.error("❌ Invoice Discord failed:", err.response?.data || err.message);
+  }
+};
+
+
+/* ======================================================
    📦 Http Agent
 ====================================================== */
 const httpsAgent = new https.Agent({
@@ -162,7 +204,7 @@ app.post("/prebook", async (req, res) => {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
 
-      await axios.post(process.env.DISCORD_WEBHOOK, {
+      const payload = {
         content:
 `🚗 **NEW PRE-BOOKING**
 
@@ -175,13 +217,15 @@ app.post("/prebook", async (req, res) => {
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-      },
-    {
+      }
+
+      sendDiscord(process.env.DISCORD_WEBHOOK, payload, {
       httpsAgent,
       headers: {
         "User-Agent": "EliteMotors/1.0",
         "Content-Type": "application/json"
-      }
+      },
+      timeout: 15000
     }).catch(err => console.error("Discord failed:", err.message));
     }
 
@@ -291,7 +335,6 @@ app.post("/invoice", async (req, res) => {
     if (process.env.INVOICE_WEBHOOK) {
       const form = new FormData();
 
-      // Ensure file exists before reading (Render safety)
       if (!fs.existsSync(filePath)) {
         throw new Error("Invoice PDF not found: " + filePath);
       }
@@ -328,14 +371,15 @@ app.post("/invoice", async (req, res) => {
         })
       );
 
-      await axios.post(process.env.INVOICE_WEBHOOK, form, {
+      await sendDiscordFile(process.env.INVOICE_WEBHOOK, form, {
         httpsAgent,
         headers: {
           ...form.getHeaders(),
           "User-Agent": "EliteMotors/1.0"
         },
         maxContentLength: Infinity,
-        maxBodyLength: Infinity
+        maxBodyLength: Infinity,
+        timeout: 20000
       }).catch(err => console.error("Discord failed:", err.message));
     }
 
