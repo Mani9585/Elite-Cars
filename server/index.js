@@ -5,40 +5,13 @@ import mongoose from "mongoose";
 import fs from "fs";
 import https from "https";
 import { FormData, File } from "formdata-node";
+import axios from "axios";
 import { generateInvoice } from "./utils/generateInvoice.js";
-import fetch from "node-fetch";
-
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-
-/* ======================================================
-   📦 Discord Helper
-====================================================== */
-const sendBotMessage = async (content) => {
-  try {
-    const res = await fetch(
-      `https://discord.com/api/v10/channels/${process.env.ORDER_CHANNEL_ID}/messages`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bot ${process.env.ORDER_BOT_TOKEN}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ content })
-      }
-    );
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text);
-    }
-  } catch (e) {
-    console.error("Bot send failed:", e.message);
-  }
-};
 
 /* ======================================================
    📦 Http Agent
@@ -185,12 +158,12 @@ app.post("/prebook", async (req, res) => {
     );
 
     // 📤 Discord message (Render-safe, no FormData)
-    if (process.env.ORDER_BOT_TOKEN && process.env.ORDER_CHANNEL_ID) {
+    if (process.env.DISCORD_WEBHOOK) {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
-   
-      try {
-        await sendBotMessage(
+
+      await axios.post(process.env.DISCORD_WEBHOOK, {
+        content:
 `🚗 **NEW PRE-BOOKING**
 
 👤 **Customer:** ${name}
@@ -202,13 +175,16 @@ app.post("/prebook", async (req, res) => {
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-        );
-
-        console.log("✅ Prebook sent to Discord");
-      } catch (e) {
-        console.error("❌ Prebook Discord failed:", e.message);
+      },
+    {
+      httpsAgent,
+      headers: {
+        "User-Agent": "EliteMotors/1.0",
+        "Content-Type": "application/json"
       }
+    });
     }
+
     res.json({ success: true });
   } catch (err) {
     console.error("Prebook error:", err);
@@ -268,6 +244,8 @@ app.post("/invoice", async (req, res) => {
       taxAmount
     } = req.body;
 
+    console.log("📥 Invoice Request:", req.body);
+
     // ===============================
     // 🔍 Stock Check
     // ===============================
@@ -310,9 +288,10 @@ app.post("/invoice", async (req, res) => {
     // ===============================
     // 📤 Send to Discord (multipart is required here)
     // ===============================
-    if (process.env.ORDER_BOT_TOKEN && process.env.INVOICE_CHANNEL_ID) {
+    if (process.env.INVOICE_WEBHOOK) {
       const form = new FormData();
 
+      // Ensure file exists before reading (Render safety)
       if (!fs.existsSync(filePath)) {
         throw new Error("Invoice PDF not found: " + filePath);
       }
@@ -325,7 +304,6 @@ app.post("/invoice", async (req, res) => {
         new File([fileBuffer], fileName, { type: "application/pdf" })
       );
 
-      // Message
       form.append(
         "payload_json",
         JSON.stringify({
@@ -336,34 +314,27 @@ app.post("/invoice", async (req, res) => {
 📞 **Phone:** ${phone}
 🚘 **Car:** ${carName}
 📅 **Delivery:** ${date} ${time}
-🙎 **Seller:** ${sellerName}
-🔢 **Plate:** ${plate}
+🙎 **Seller Staff:** ${sellerName}
+🔢 **Car Plate:** ${plate}
 
-💰 **Total:** Rs. ${total.toLocaleString("en-IN")}`
+💸 **Sale:** ${discount}%
+✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
+
+💰 **Original Price:** Rs. ${original.toLocaleString("en-IN")}
+🤑 **Discounted Price:** Rs. ${withoutTax.toLocaleString("en-IN")}
+🙏 **Tax Amount:** Rs. ${tax.toLocaleString("en-IN")}
+🪙 **Total Amount:** Rs. ${total.toLocaleString("en-IN")}`
         })
       );
 
-      try {
-        const res = await fetch(
-          `https://discord.com/api/v10/channels/${process.env.INVOICE_CHANNEL_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Authorization": `Bot ${process.env.ORDER_BOT_TOKEN}`
-            },
-            body: form
-          }
-        );
-
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`Discord Bot error ${res.status}: ${text}`);
-        }
-
-        console.log("✅ Invoice sent via Discord Bot");
-      } catch (e) {
-        console.error("❌ Bot upload failed:", e.message);
-      }
+      await axios.post(process.env.INVOICE_WEBHOOK, form, {
+        httpsAgent,
+        headers: {
+          "User-Agent": "EliteMotors/1.0"
+        },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
+      });
     }
 
     // ===============================
