@@ -121,8 +121,6 @@ app.get("/cars", async (req, res) => {
 ====================================================== */
 app.post("/prebook", async (req, res) => {
   try {
-    console.log("📥 PREBOOK BODY:", req.body);
-
     const {
       name,
       phone,
@@ -135,31 +133,27 @@ app.post("/prebook", async (req, res) => {
       saleApplied
     } = req.body;
 
-    // 🔍 Correct Mongo array match
+    // 🔍 Stock check (FIXED for Mongo arrays)
     const exists = await Catalogue.findOne({
       menu: { $elemMatch: { name: carName, stock: { $gt: 0 } } }
     });
 
-    console.log("🟢 Stock found:", !!exists);
-
     if (!exists) {
-      return res.status(400).json({ success: false, reason: "out_of_stock" });
+      return res.status(400).json({ success: false });
     }
 
-    // ➖ Reduce stock
-    const updateResult = await Catalogue.updateOne(
+    // ➖ Reduce stock (FIXED to match the same car)
+    await Catalogue.updateOne(
       { menu: { $elemMatch: { name: carName, stock: { $gt: 0 } } } },
       { $inc: { "menu.$.stock": -1 } }
     );
 
-    console.log("📉 Stock update:", updateResult);
-
-    // 📤 Discord (JSON only – Render safe)
+    // 📤 Discord message (Render-safe, no FormData)
     if (process.env.DISCORD_WEBHOOK) {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
 
-      const discordPayload = {
+      await axios.post(process.env.DISCORD_WEBHOOK, {
         content:
 `🚗 **NEW PRE-BOOKING**
 
@@ -172,20 +166,13 @@ app.post("/prebook", async (req, res) => {
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
 💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-      };
-
-      console.log("📨 Sending to Discord...");
-
-      await axios.post(process.env.DISCORD_WEBHOOK, discordPayload);
-
-      console.log("✅ Discord sent");
+      });
     }
 
     res.json({ success: true });
-
   } catch (err) {
-    console.error("🔥 PREBOOK ERROR:", err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error("Prebook error:", err);
+    res.status(500).json({ success: false });
   }
 });
 

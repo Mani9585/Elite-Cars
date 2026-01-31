@@ -8,14 +8,13 @@ export const generateInvoice = async ({
   phone,
   deliveryDate,
   deliveryTime,
-  price,
-  sale,
-  saleApplied,
+  price,          // FULL AMOUNT (e.g. 2500000)
+  sale,           // percentage (e.g. 5)
+  saleApplied,     // true / false
   sellerName,
   plate
 }) => {
-  // 🔥 Render allows only /tmp for writing
-  const invoicesDir = "/tmp/invoices";
+  const invoicesDir = path.join(process.cwd(), "invoices");
 
   if (!fs.existsSync(invoicesDir)) {
     fs.mkdirSync(invoicesDir, { recursive: true });
@@ -30,19 +29,26 @@ export const generateInvoice = async ({
   doc.pipe(stream);
 
   /* ================= WATERMARK ================= */
-  const watermarkPath = path.join(process.cwd(), "assets", "logo.png");
+const watermarkPath = path.join(process.cwd(), "assets", "logo.png");
 
-  if (fs.existsSync(watermarkPath)) {
-    const pageWidth = doc.page.width;
-    const pageHeight = doc.page.height;
+if (fs.existsSync(watermarkPath)) {
+  const pageWidth = doc.page.width;
+  const pageHeight = doc.page.height;
 
-    doc.save();
-    doc.opacity(0.08);
-    doc.image(watermarkPath, pageWidth / 2 - 180, pageHeight / 2 - 180, { width: 360 });
-    doc.restore();
-  }
+  doc.save();
+  doc.opacity(0.08); // 🔥 light watermark
 
-  /* ================= PRICE LOGIC ================= */
+  doc.image(
+    watermarkPath,
+    pageWidth / 2 - 180,
+    pageHeight / 2 - 180,
+    { width: 360 }
+  );
+
+  doc.restore();
+}
+
+  /* ================= PRICE LOGIC (FINAL) ================= */
   const basePrice = Number(price);
   const safePrice = isNaN(basePrice) ? 0 : basePrice;
 
@@ -52,7 +58,7 @@ export const generateInvoice = async ({
       : 0;
 
   const withoutTaxPrice = safePrice - discount;
-  const taxAmount = Math.round(withoutTaxPrice * (tax / 100));
+  const taxAmount = Math.round(withoutTaxPrice * ( tax / 100));
   const total = withoutTaxPrice + taxAmount;
 
   /* ================= HEADER ================= */
@@ -66,63 +72,168 @@ export const generateInvoice = async ({
     .font("Helvetica-Bold")
     .text("ELITE MOTORS", 0, 40, { align: "center" });
 
-  doc.fontSize(12).font("Helvetica").text("CAR DEALERSHIP", { align: "center" });
-  doc.moveDown(1).fontSize(18).fillColor("#e10600").font("Helvetica-Bold").text("INVOICE", { align: "center" });
+  doc
+    .fontSize(12)
+    .font("Helvetica")
+    .text("CAR DEALERSHIP", { align: "center" });
+
+  doc
+    .moveDown(1)
+    .fontSize(18)
+    .fillColor("#e10600")
+    .font("Helvetica-Bold")
+    .text("INVOICE", { align: "center" });
+
   doc.fillColor("#000");
 
   /* ================= CUSTOMER INFO ================= */
-  doc.moveDown(2).fontSize(11).font("Helvetica");
+  doc.moveDown(2);
+  doc.fontSize(11).font("Helvetica");
+
   doc.text(`NAME : ${customerName}`, 40);
   doc.text(`PHONE : ${phone}`, 40);
   doc.text(`INVOICE : EL-${Date.now()}`, 40);
-  doc.text(`DATE : ${new Date().toLocaleDateString()}`, 400, doc.y - 42);
-  doc.text(`SELLER : ${sellerName}`, 400, doc.y - 42);
 
-  doc.moveDown(5).moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+  doc.text(
+    `DATE : ${new Date().toLocaleDateString()}`,
+    400,
+    doc.y - 42
+  );
+  
+  doc.text(
+    `SELLER : ${sellerName}`, 400, doc.y - 42
+  );
 
-  /* ================= TABLE ================= */
+  doc.moveDown(5);
+  doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+
+  /* ================= TABLE HEADER ================= */
   doc.moveDown(1);
   const tableTop = doc.y;
 
   doc.rect(40, tableTop, 515, 28).fill("#2f3640");
-  doc.fillColor("white").font("Helvetica-Bold").fontSize(11)
+
+  doc
+    .fillColor("white")
+    .font("Helvetica-Bold")
+    .fontSize(11)
     .text("CAR INFO", 50, tableTop + 8)
     .text("QTY", 350, tableTop + 8)
     .text("PRICE", 450, tableTop + 8);
 
-  doc.fillColor("black").moveDown(2).font("Helvetica");
+  doc.fillColor("black");
+
+  /* ================= TABLE CONTENT ================= */
+  doc.moveDown(2);
+  doc.font("Helvetica");
+
   doc.text(`CAR MODEL : ${carName}`, 50);
   doc.text(`NUMBER PLATE : ${plate}`, 50, doc.y + 15);
-  doc.text("1", 360, tableTop + 36);
-  doc.text(`Rs. ${safePrice.toLocaleString("en-IN")}`, 450, tableTop + 36);
 
-  /* ================= TOTALS ================= */
-  doc.moveDown(15).moveTo(40, doc.y).lineTo(555, doc.y).stroke();
-  doc.moveDown(1).fontSize(11).font("Helvetica-Bold").text("PAYMENT DETAILS", 40);
+  doc.text("1", 360, tableTop + 36);
+  doc.text(
+    `Rs. ${safePrice.toLocaleString("en-IN")}`,
+    450,
+    tableTop + 36
+  );
+
+  /* ================= PAYMENT SECTION ================= */
+  doc.moveDown(15);
+  doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+
+  doc.moveDown(1);
+  doc.fontSize(11).font("Helvetica-Bold").text("PAYMENT DETAILS", 40);
   doc.font("Helvetica").moveDown(0.5);
+
   doc.text("TO : ELITE MOTORS", 40);
   doc.text("PAYMENT METHOD : BANK TRANSACTION", 40);
 
+  /* ================= TOTALS ================= */
   doc.font("Helvetica-Bold");
-  doc.text(`SUBTOTAL : Rs. ${safePrice.toLocaleString("en-IN")}`, 400, doc.y - 50);
-  doc.text(`DISCOUNT : Rs. ${discount.toLocaleString("en-IN")}`, 400);
-  doc.text(`TAX @ ${tax}% : Rs. ${taxAmount.toLocaleString("en-IN")}`, 400);
-  doc.text(`TOTAL        : Rs. ${total.toLocaleString("en-IN")}`, 400);
 
-  /* ================= FOOTER ================= */
+  doc.text(
+    `SUBTOTAL : Rs. ${safePrice.toLocaleString("en-IN")}`,
+    400,
+    doc.y - 50
+  );
+
+  doc.text(
+    `DISCOUNT : Rs. ${discount.toLocaleString("en-IN")}`,
+    400
+  );
+
+  doc.text(
+    `TAX @ ${tax}% : Rs. ${taxAmount.toLocaleString("en-IN")}`,
+    400
+  );
+
+  doc.text(
+    `TOTAL        : Rs. ${total.toLocaleString("en-IN")}`,
+    400
+  );
+
+  /* ================= TERMS ================= */
+  doc.moveDown(3);
+  doc.moveTo(40, doc.y).lineTo(555, doc.y).stroke();
+
+  doc.moveDown(1);
+  doc.font("Helvetica-Bold").text("TERMS AND CONDITIONS", 40);
+  doc.moveDown(0.5);
+
+  doc.font("Helvetica").fontSize(9).text(
+    `This invoice is issued by Elite Motors, ThalaiNagaram City. All vehicle details, pricing, and customer information shown in this invoice are final at the time of sale. Payment must be completed before vehicle delivery. Once delivered, the dealer will not be responsible for any mechanical issues, damages, fines, or legal matters. Registration, insurance, and tax charges are the customer's responsibility unless mentioned otherwise. Cancellation after booking may result in loss of advance amount. Any legal matters, if raised, will be handled only in Thalaingaram City courts.`,
+    40,
+    doc.y,
+    { width: 515, align: "justify" }
+  );
+
+
+/* ================= SEAL ================= */
+const sealPath = path.join(process.cwd(), "assets", "seal.png");
+
+if (fs.existsSync(sealPath)) {
+  const sealSize = 90;
+
+  doc.image(
+    sealPath,
+    doc.page.width - sealSize - 40,
+    doc.page.height - sealSize - 90,
+    { width: sealSize }
+  );
+
+  doc
+    .fontSize(9)
+    .font("Helvetica-Bold")
+    .text(
+      "AUTHORIZED SEAL",
+      doc.page.width - sealSize - 40,
+      doc.page.height - 95,
+      { width: sealSize, align: "center" }
+    );
+}
+
+
+  /* ================= FOOTER (FIXED) ================= */
   const footerHeight = 40;
   const footerY = doc.page.height - footerHeight;
-  doc.save().rect(0, footerY, doc.page.width, footerHeight).fill("#2f3640").restore();
+
+  doc
+    .save()
+    .rect(0, footerY, doc.page.width, footerHeight)
+    .fill("#2f3640")
+    .restore();
 
   doc.end();
 
+  /* ================= WAIT FOR FILE WRITE ================= */
   await new Promise((resolve, reject) => {
     stream.on("finish", resolve);
     stream.on("error", reject);
   });
 
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).size === 0) {
-    throw new Error("Invoice PDF failed to generate");
+  const stats = fs.statSync(filePath);
+  if (stats.size === 0) {
+    throw new Error("Generated invoice is empty");
   }
 
   return { filePath, fileName };
