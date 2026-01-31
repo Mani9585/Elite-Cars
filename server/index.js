@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import fs from "fs";
-import path from "path";
+import https from "https";
 import FormData from "form-data";
 import axios from "axios";
 import { generateInvoice } from "./utils/generateInvoice.js";
@@ -11,6 +11,15 @@ import { generateInvoice } from "./utils/generateInvoice.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
+/* ======================================================
+   📦 Http Agent
+====================================================== */
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: true,
+  keepAlive: true
+});
 
 /* ======================================================
    📦 Schema (PRICE FIXED)
@@ -168,6 +177,7 @@ app.post("/prebook", async (req, res) => {
 🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
       },
     {
+      httpsAgent,
       headers: {
         "User-Agent": "EliteMotors/1.0",
         "Content-Type": "application/json"
@@ -319,6 +329,7 @@ app.post("/invoice", async (req, res) => {
       );
 
       await axios.post(process.env.INVOICE_WEBHOOK, form, {
+        httpsAgent,
         headers: {
           ...form.getHeaders(),
           "User-Agent": "EliteMotors/1.0"
