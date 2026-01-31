@@ -130,7 +130,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
         alert("Pre-booking request sent successfully!");
         onBooked();
       } else {
-        alert("Booking failed. Please try again.");
+        alert("Booking failed. Please Visit the Shop...");
       }
     } catch {
       alert("Server error. Try again later.");
