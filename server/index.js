@@ -133,52 +133,40 @@ app.post("/prebook", async (req, res) => {
       saleApplied
     } = req.body;
 
-    // 🔍 Stock check
+    // 🔍 Stock check (FIXED for Mongo arrays)
     const exists = await Catalogue.findOne({
-      "menu.name": carName,
-      "menu.stock": { $gt: 0 }
+      menu: { $elemMatch: { name: carName, stock: { $gt: 0 } } }
     });
 
     if (!exists) {
       return res.status(400).json({ success: false });
     }
 
-    // ➖ Reduce stock
+    // ➖ Reduce stock (FIXED to match the same car)
     await Catalogue.updateOne(
-      { "menu.name": carName },
+      { menu: { $elemMatch: { name: carName, stock: { $gt: 0 } } } },
       { $inc: { "menu.$.stock": -1 } }
     );
 
-    // 📤 Discord message + PDF
+    // 📤 Discord message (Render-safe, no FormData)
     if (process.env.DISCORD_WEBHOOK) {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
 
-      const form = new FormData();
+      await axios.post(process.env.DISCORD_WEBHOOK, {
+        content:
+`🚗 **NEW PRE-BOOKING**
 
-      form.append(
-        "payload_json",
-        JSON.stringify({
-          content:
-    `🚗 **NEW PRE-BOOKING**
+👤 **Customer:** ${name}
+📞 **Phone:** ${phone}
+🚘 **Car:** ${carName}
+📅 **Delivery:** ${date} ${time}
 
-    👤 **Customer:** ${name}
-    📞 **Phone:** ${phone}
-    🚘 **Car:** ${carName}
-    📅 **Delivery:** ${date} ${time}
-
-    💸 **Sale:** ${sale}%
-    ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
-    💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
-    🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
-        })
-      );
-
-      await axios.post(
-        process.env.DISCORD_WEBHOOK,
-        form,
-        { headers: form.getHeaders() }
-      );
+💸 **Sale:** ${sale}%
+✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
+💰 **Original Price:** Rs ${safeOriginal.toLocaleString("en-IN")}
+🤑 **Final Price:** Rs ${safeApplied.toLocaleString("en-IN")}`
+      });
     }
 
     res.json({ success: true });
@@ -240,32 +228,57 @@ app.post("/invoice", async (req, res) => {
       taxAmount
     } = req.body;
 
-    // 🔍 Stock check
+    console.log("📥 Invoice Request:", req.body);
+
+    // ===============================
+    // 🔍 Stock Check
+    // ===============================
     const exists = await Catalogue.findOne({
-      "menu.name": carName
+      menu: { $elemMatch: { name: carName, stock: { $gt: 0 } } }
     });
 
     if (!exists) {
-      return res.status(400).json({ success: false });
+      return res.status(400).json({
+        success: false,
+        message: "Car not found or out of stock"
+      });
     }
 
-    // 🧾 Generate invoice
+    // ===============================
+    // 💰 Safe Number Conversion
+    // ===============================
+    const original = Number(originalPrice);
+    const withoutTax = Number(withoutTaxPrice);
+    const tax = Number(taxAmount);
+    const discount = Number(sale);
+    const total = withoutTax + tax;
+
+    // ===============================
+    // 🧾 Generate Invoice PDF
+    // ===============================
     const { filePath, fileName } = await generateInvoice({
       carName,
       customerName: name,
       phone,
       deliveryDate: date,
       deliveryTime: time,
-      price: Number(originalPrice),   // ✅ ENSURE NUMBER
-      sale: Number(sale),
+      price: original,
+      sale: discount,
       saleApplied,
       sellerName,
       plate
     });
 
-    // 📤 Discord message + PDF
+    // ===============================
+    // 📤 Send to Discord (multipart is required here)
+    // ===============================
     if (process.env.INVOICE_WEBHOOK) {
       const form = new FormData();
+
+      // Ensure file exists before reading (Render safety)
+      if (!fs.existsSync(filePath)) {
+        throw new Error("Invoice PDF not found: " + filePath);
+      }
 
       form.append(
         "files[0]",
@@ -287,37 +300,44 @@ app.post("/invoice", async (req, res) => {
 🚘 **Car:** ${carName}
 📅 **Delivery:** ${date} ${time}
 🙎 **Seller Staff:** ${sellerName}
-🔢 **Car Number Plate:** ${plate}
+🔢 **Car Plate:** ${plate}
 
-💸 **Sale:** ${sale}%
+💸 **Sale:** ${discount}%
 ✅ **Sale Applied:** ${saleApplied ? "YES" : "NO"}
-💰 **Original Price:** Rs ${Number(originalPrice).toLocaleString("en-IN")}
-🤑 **Discounted Price:** Rs. ${Number(withoutTaxPrice).toLocaleString("en-IN")}
-🙏 **Tax Amount:** Rs. ${Number(taxAmount).toLocaleString("en-IN")}
-🪙 **Total Amount:** Rs. ${Number(withoutTaxPrice + taxAmount).toLocaleString("en-IN")}`
 
+💰 **Original Price:** Rs. ${original.toLocaleString("en-IN")}
+🤑 **Discounted Price:** Rs. ${withoutTax.toLocaleString("en-IN")}
+🙏 **Tax Amount:** Rs. ${tax.toLocaleString("en-IN")}
+🪙 **Total Amount:** Rs. ${total.toLocaleString("en-IN")}`
         })
       );
 
-      await axios.post(
-        process.env.INVOICE_WEBHOOK,
-        form,
-        { headers: form.getHeaders() }
-      );
+      await axios.post(process.env.INVOICE_WEBHOOK, form, {
+        headers: form.getHeaders(),
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
+      });
     }
 
-    // 🧹 DELETE PDF AFTER SUCCESSFUL SEND
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error("Failed to delete invoice:", err.message);
-      } else {
-        res.json({ success: true });
+    // ===============================
+    // 🧹 Delete PDF (Render-safe)
+    // ===============================
+    if (fs.existsSync(filePath)) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (e) {
+        console.error("❌ Failed to delete invoice:", e.message);
       }
-    });
+    }
+
+    res.json({ success: true });
 
   } catch (err) {
-    console.error("Invoice Error:", err);
-    res.status(500).json({ success: false });
+    console.error("🔥 Invoice Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Invoice generation failed"
+    });
   }
 });
 
