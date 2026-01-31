@@ -162,7 +162,7 @@ app.post("/prebook", async (req, res) => {
       const safeOriginal = Number(originalPrice) || 0;
       const safeApplied = Number(appliedPrice) || 0;
 
-      await axios.post(process.env.DISCORD_WEBHOOK, {
+      axios.post(process.env.DISCORD_WEBHOOK, {
         content:
 `🚗 **NEW PRE-BOOKING**
 
@@ -182,7 +182,7 @@ app.post("/prebook", async (req, res) => {
         "User-Agent": "EliteMotors/1.0",
         "Content-Type": "application/json"
       }
-    });
+    }).catch(err => console.error("Discord failed:", err.message));
     }
 
     res.json({ success: true });
@@ -328,7 +328,7 @@ app.post("/invoice", async (req, res) => {
         })
       );
 
-      await axios.post(process.env.INVOICE_WEBHOOK, form, {
+      axios.post(process.env.INVOICE_WEBHOOK, form, {
         httpsAgent,
         headers: {
           ...form.getHeaders(),
@@ -336,7 +336,7 @@ app.post("/invoice", async (req, res) => {
         },
         maxContentLength: Infinity,
         maxBodyLength: Infinity
-      });
+      }).catch(err => console.error("Discord failed:", err.message));
     }
 
     // ===============================
