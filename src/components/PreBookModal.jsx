@@ -127,7 +127,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
       const data = await res.json();
 
       if (data.success) {
-        alert("Pre-booking request sent successfully!");
+        alert("Pre-booking request sent successfully...! Please take the delivery at Dealership.");
         onBooked();
       } else {
         alert("Booking failed. Please Visit the Shop...");
@@ -135,7 +135,6 @@ export default function PreBookModal({ car, onClose, onBooked }) {
     } catch {
       alert("Server error. Try again later.");
     }
-
     setLoading(false);
   };
 
@@ -150,7 +149,7 @@ export default function PreBookModal({ car, onClose, onBooked }) {
         {/* CAPTCHA */}
         {!verified ? (
           <div className="captcha-box">
-            <p className="captcha-question">Verify you are human</p>
+            <p className="captcha-question">Verify you are Human</p>
 
             <div className="captcha-math">
               {num1} + {num2} = ?
